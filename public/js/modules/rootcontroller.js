@@ -5,6 +5,7 @@ define( 'RootController', ['Eventable','RootView','DataFactory'], function(Event
 			this.view = rootView;
 			this.data = dataFactory;
 			window.app.bus.on('title-clicked', this.sayHi);
+			console.log(window.app.schemas);
 			this.view.init();
 		},
 		sayHi: function() {

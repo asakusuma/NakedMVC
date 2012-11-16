@@ -34,9 +34,6 @@
 		Inject.setExpires(0);
 		Inject.setModuleRoot("/js/modules");
 
-		//Global app object
-		window.app = {};
-
 		require.run("application");
 
 		$(function(){ //DOM Ready
