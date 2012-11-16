@@ -7,9 +7,6 @@ define( 'Eventable', function(){
   Eventable.prototype.on = function() {
     return this.proxy.on.apply( this.proxy, arguments );
   }
-  Eventable.prototype.one = function(){
-    return this.proxy.on.apply( this.proxy, arguments );
-  },
   Eventable.prototype.trigger = function(){
     return this.proxy.trigger.apply(this.proxy, arguments);
   },
