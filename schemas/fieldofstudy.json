@@ -1,0 +1,9 @@
+{
+  "name": "FieldOfStudy",
+  "fields": {
+  	"name": {
+  		"type": "string",
+  		"validator":""
+  	}
+  }
+}

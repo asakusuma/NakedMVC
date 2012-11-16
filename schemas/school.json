@@ -1,0 +1,17 @@
+{
+  "name": "School",
+  "fields": {
+  	"name": {
+  		"type": "string",
+  		"validator":""
+  	},
+    "city": {
+  		"type": "string",
+  		"validator":""
+  	},
+  	"state": {
+  		"type": "string",
+  		"validator":""
+  	}
+  }
+}
