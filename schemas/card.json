@@ -1,0 +1,9 @@
+{
+  "name": "Card",
+  "fields": {
+    "title": {
+      "type": "string",
+      "validator": ""
+    }
+  }
+}
