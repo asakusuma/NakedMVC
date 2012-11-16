@@ -1,6 +1,6 @@
 {
   "name": "School",
-  "route": "school",
+  "route": "/school",
   "fields": {
   	"name": {
   		"type": "string",
