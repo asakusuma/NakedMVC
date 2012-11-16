@@ -1,0 +1,4 @@
+define( 'Application', function(){
+  
+  return {};
+});

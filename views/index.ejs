@@ -4,9 +4,56 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script type="text/javascript" src="/schema"></script>
+    <link rel='stylesheet' href='/stylesheets/jquery.gridster.min.css' />
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    
+    <div class="gridster">
+	    <ul>
+	        <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">Numba 1</li>
+	        <li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
+	        <li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
+
+	        <li data-row="1" data-col="2" data-sizex="2" data-sizey="1"></li>
+	        <li data-row="2" data-col="2" data-sizex="2" data-sizey="2"></li>
+
+	       
+	    </ul>
+	</div>
+
+
+    <script type="text/javascript" src="/js/lib/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="/js/lib/inject.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery.gridster.min.js"></script>
+    <script type="text/javascript" src="/js/lib/inject.min.js"></script>
+	<script type="text/javascript">
+		localStorage.clear();
+		Inject.setExpires(0);
+		Inject.setModuleRoot("/js/modules");
+		require.run("application");
+
+		$(function(){ //DOM Ready
+
+		    $(".gridster ul").gridster({
+		        widget_margins: [10, 10],
+		        widget_base_dimensions: [140, 140],
+		        avoid_overlapped_widgets: true
+		    });
+
+		    var gridster = $(".gridster ul").gridster().data('gridster');
+
+		    $('h1').click(function(event) {
+		    	event.preventDefault();
+		    	var widget = $('li:eq(0)');
+		    	gridster.remove_widget(widget, function() {
+		    		gridster.add_widget(widget,1,1,2,2);
+		    	});
+		    })
+
+		});
+	</script>
   </body>
 </html>
