@@ -32,6 +32,10 @@
 		localStorage.clear();
 		Inject.setExpires(0);
 		Inject.setModuleRoot("/js/modules");
+
+		//Global app object
+		var App = {};
+
 		require.run("application");
 
 		$(function(){ //DOM Ready
@@ -43,10 +47,10 @@
 		    });
 
 		    var gridster = $(".gridster ul").gridster().data('gridster');
-
+		    var widget = $('li:eq(0)');
 		    $('h1').click(function(event) {
 		    	event.preventDefault();
-		    	var widget = $('li:eq(0)');
+		    	
 		    	gridster.remove_widget(widget, function() {
 		    		gridster.add_widget(widget,1,1,2,2);
 		    	});
