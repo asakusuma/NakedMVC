@@ -1,8 +1,8 @@
 define( 'Application', ['RootController', 'Eventable', 'Promise'], function(rootController, Eventable, Promise){
 
 	//Create a global event bus
-	App.events = new Eventable();
-	
+	window.app.bus = new Eventable();
+
  	rootController.init();
 
 });

@@ -4,11 +4,11 @@ define( 'RootController', ['Eventable','RootView','DataFactory'], function(Event
 		init: function() {
 			this.view = rootView;
 			this.data = dataFactory;
-			this.view.on('view-loaded', this.sayHi);
+			window.app.bus.on('title-clicked', this.sayHi);
 			this.view.init();
 		},
 		sayHi: function() {
-			console.log('View loaded!');
+			alert('Title clicked!!');
 		}
 	});
 	return RootController;
