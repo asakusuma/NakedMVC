@@ -8,25 +8,16 @@
   <body>
     <h1><%= title %></h1>
     
-
     <div class="gridster">
 	    <ul>
-	        <li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
+	        <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">Numba 1</li>
 	        <li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
 	        <li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
 
 	        <li data-row="1" data-col="2" data-sizex="2" data-sizey="1"></li>
 	        <li data-row="2" data-col="2" data-sizex="2" data-sizey="2"></li>
 
-	        <li data-row="1" data-col="4" data-sizex="1" data-sizey="1"></li>
-	        <li data-row="2" data-col="4" data-sizex="2" data-sizey="1"></li>
-	        <li data-row="3" data-col="4" data-sizex="1" data-sizey="1"></li>
-
-	        <li data-row="1" data-col="5" data-sizex="1" data-sizey="1"></li>
-	        <li data-row="3" data-col="5" data-sizex="1" data-sizey="1"></li>
-
-	        <li data-row="1" data-col="6" data-sizex="1" data-sizey="1"></li>
-	        <li data-row="2" data-col="6" data-sizex="1" data-sizey="2"></li>
+	       
 	    </ul>
 	</div>
 
@@ -43,12 +34,23 @@
 
 		$(function(){ //DOM Ready
 
-    $(".gridster ul").gridster({
-        widget_margins: [10, 10],
-        widget_base_dimensions: [140, 140]
-    });
+		    $(".gridster ul").gridster({
+		        widget_margins: [10, 10],
+		        widget_base_dimensions: [140, 140],
+		        avoid_overlapped_widgets: true
+		    });
 
-});
+		    var gridster = $(".gridster ul").gridster().data('gridster');
+
+		    $('h1').click(function(event) {
+		    	event.preventDefault();
+		    	var widget = $('li:eq(0)');
+		    	gridster.remove_widget(widget, function() {
+		    		gridster.add_widget(widget,1,1,2,2);
+		    	});
+		    })
+
+		});
 	</script>
   </body>
 </html>
