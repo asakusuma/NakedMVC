@@ -29,6 +29,8 @@
     <script type="text/javascript" src="/js/lib/jquery.gridster.min.js"></script>
     <script type="text/javascript" src="/js/lib/inject.min.js"></script>
 	<script type="text/javascript">
+		localStorage.clear();
+		Inject.setExpires(0);
 		Inject.setModuleRoot("/js/modules");
 		require.run("application");
 
