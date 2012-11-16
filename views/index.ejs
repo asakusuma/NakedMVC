@@ -7,5 +7,16 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+
+
+    <script type="text/javascript" src="/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="/js/lib/inject.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="/js/lib/inject.js"></script>
+	<script type="text/javascript">
+		Inject.setModuleRoot("/js/modules");
+		require.run("program");
+	</script>
   </body>
 </html>
