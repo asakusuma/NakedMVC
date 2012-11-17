@@ -1,8 +1,12 @@
-define( 'Application', ['RootController', 'Eventable', 'Promise'], function(rootController, Eventable, Promise){
+require.config({
+	baseUrl: "/js/modules"
+});
+
+require( ['RootController', 'Eventable', 'Promise'], function(rootController, Eventable, Promise){
 
 	//Create a global event bus
-	App.events = new Eventable();
-	
- 	rootController.init();
+	window.app.bus = new Eventable();
+
+	rootController.init();
 
 });

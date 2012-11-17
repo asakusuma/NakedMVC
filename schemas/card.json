@@ -1,9 +1,12 @@
 {
   "name": "Card",
+  "route": "/card",
   "fields": {
-    "title": {
-      "type": "string",
-      "validator": ""
+  	"root": {
+  		"type": "School|FieldOfStudy"
+  	},
+    "comments": {
+    	"type": "[Comment]"
     }
   }
 }

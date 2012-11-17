@@ -4,6 +4,11 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/jquery.gridster.min.css' />
+    <script type="text/javascript">
+    	window.app = {
+    		baseUrl: ''
+    	};
+    </script>
     <script type="text/javascript" src="/schema"></script>
   </head>
   <body>
@@ -28,16 +33,9 @@
     <script type="text/javascript" src="/js/lib/inject.min.js"></script>
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery.gridster.min.js"></script>
-    <script type="text/javascript" src="/js/lib/inject.min.js"></script>
+    <script type="text/javascript" data-main="/js/application.js" src="/js/lib/require.js"></script>
 	<script type="text/javascript">
-		localStorage.clear();
-		Inject.setExpires(0);
-		Inject.setModuleRoot("/js/modules");
 
-		//Global app object
-		var App = {};
-
-		require.run("application");
 
 		$(function(){ //DOM Ready
 
