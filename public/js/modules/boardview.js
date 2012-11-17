@@ -13,7 +13,7 @@ define( 'BoardView', ['Eventable'], function(Eventable) {
 				this.el.html("<h2>Board not found</h2>");
 			} else {
 				console.log(data);
-				this.el.html("<h2>" + data.get('title') + "</h2>");
+				this.el.html("<h2>" + data.get('title') + "</h2><h3>By " + data.get('owner') + "</h3>");
 			}
 		}
 	});
