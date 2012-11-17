@@ -35,7 +35,12 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/schema', schema.script);
+app.get('/boards', db.listBoards);
+app.get('/cards', db.listCards);
 app.get('/board/:id', db.board);
+app.get('/card/:id', db.card);
+app.get('/field-of-study/:id', db.fieldOfStudy);
+app.get('/school/:id', db.school);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
