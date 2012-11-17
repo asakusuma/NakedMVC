@@ -1,4 +1,4 @@
-define( 'DataFactory', ['Eventable', 'Promise'], function(Eventable, Promise) {
+define( 'DataFactory', ['Eventable', 'Promise', 'Model'], function(Eventable, Promise, Model) {
 	var a = [];
 	var DataFactory = new Eventable();
 	DataFactory = _.extend(DataFactory, {
@@ -13,7 +13,8 @@ define( 'DataFactory', ['Eventable', 'Promise'], function(Eventable, Promise) {
 			var promise = new Promise(),
 				responses = 0,
 				target = ids.length,
-				data = [];
+				data = [],
+				modelCollection;
 			
 			if(_.isUndefined(window.app.schemas[entityKey])) {
 				promise.reject();
@@ -33,11 +34,14 @@ define( 'DataFactory', ['Eventable', 'Promise'], function(Eventable, Promise) {
 			}
 
 			if(ids.length === 1) {
+				modelCollection = this.models[entityKey];
 				$.ajax({
 	               	type: 'GET',
-	               	url: window.app.baseUrl + window.app.schemas[entityKey].route + ids[0]
+	               	url: window.app.baseUrl + window.app.schemas[entityKey].route + "/" + ids[0]
 	            }).done(function( data ) {
-	             	promise.resolve(JSON.parse(data));
+	            	var model = new Model(data);
+	            	modelCollection['_id'] = model;
+	             	promise.resolve(model);
 	           	}).fail(function () {
 	           		promise.reject();
 	          	});

@@ -4,8 +4,17 @@ define( 'BoardView', ['Eventable'], function(Eventable) {
 		queries: [
 			'Board'
 		],
-		init: function() {
+		init: function(el) {
+			this.el = el;
 			return this.queries;
+		},
+		loadData: function(query, data) {
+			if(data === null) {
+				this.el.html("<h2>Board not found</h2>");
+			} else {
+				console.log(data);
+				this.el.html("<h2>" + data.get('title') + "</h2>");
+			}
 		}
 	});
 	return BoardView;

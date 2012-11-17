@@ -3,6 +3,7 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
     <link rel='stylesheet' href='/stylesheets/jquery.gridster.min.css' />
     <script type="text/javascript">
     	window.app = {
@@ -12,8 +13,11 @@
     <script type="text/javascript" src="/schema"></script>
   </head>
   <body>
-    <h1><%= title %></h1>
+    <div id="app" class="container">
+
+    </div>
     
+    <!--
     <div class="gridster">
 	    <ul>
 	        <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">Numba 1</li>
@@ -26,6 +30,7 @@
 	       
 	    </ul>
 	</div>
+	-->
 
 	<script type="text/javascript" src="/js/lib/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="/js/lib/underscore-min.js"></script>
@@ -34,6 +39,7 @@
     <script data-main="js/modules/application.js" src="js/lib/require.js"></script>
 	<script type="text/javascript">
 
+/*
 		$(function(){ //DOM Ready
 
 		    $(".gridster ul").gridster({
@@ -53,6 +59,7 @@
 		    })
 
 		});
+*/
 	</script>
   </body>
 </html>

@@ -10,7 +10,7 @@ define( 'RootController', ['Eventable','BoardView','DataFactory'], function(Even
 			var queries;
 			//Decision Board Page
 			this.view = boardView;
-			entityKeys = this.view.init();
+			entityKeys = this.view.init($('#app'));
 			this.requestViewData(entityKeys, slug);
 		},
 		routeToHome: function() {
