@@ -10,7 +10,10 @@ define( 'DataFactory', ['Eventable', 'Promise'], function(Eventable, Promise) {
 		//entityKey = maps to model/schema name
 		//ids = array of ids
 		query: function(entityKey, ids) {
-			var promise = new Promise();
+			var promise = new Promise(),
+				responses = 0,
+				target = ids.length,
+				data = [];
 			
 			if(_.isUndefined(window.app.schemas[entityKey])) {
 				promise.reject();
@@ -29,17 +32,21 @@ define( 'DataFactory', ['Eventable', 'Promise'], function(Eventable, Promise) {
 				this.models[entityKey] = {};
 			}
 
-			$.ajax({
-               	type: 'GET',
-               	url: window.app.baseUrl + window.app.schemas[entityKey]
-            }).done(function( data ) {
-             	promise.resolve(JSON.parse(data));
-           	}).fail(function () {
-
-          	});
+			if(ids.length === 1) {
+				$.ajax({
+	               	type: 'GET',
+	               	url: window.app.baseUrl + window.app.schemas[entityKey].route + ids[0]
+	            }).done(function( data ) {
+	             	promise.resolve(JSON.parse(data));
+	           	}).fail(function () {
+	           		promise.reject();
+	          	});
+			}
 
 			return promise;
 		}
 	});
+
+	DataFactory.init();
 	return DataFactory;
 });

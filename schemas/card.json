@@ -1,6 +1,6 @@
 {
   "name": "Card",
-  "route": "/card",
+  "route": "card/",
   "fields": {
   	"root": {
   		"type": "School|FieldOfStudy"

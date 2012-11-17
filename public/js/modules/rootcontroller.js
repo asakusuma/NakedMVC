@@ -1,19 +1,33 @@
-define( 'RootController', ['Eventable','RootView','DataFactory'], function(Eventable, rootView, dataFactory) {
+define( 'RootController', ['Eventable','BoardView','DataFactory'], function(Eventable, boardView, dataFactory) {
 	var RootController = new Eventable();
 	RootController = _.extend(RootController, {
 		init: function() {
-			this.view = rootView;
 			this.data = dataFactory;
-			window.app.bus.on('title-clicked', this.sayHi);
-			console.log(app.schemas);
-			this.view.init();
+			_.bindAll(this);
 		},
 		//Routes
 		routeToDB: function(slug) {
+			var queries;
 			//Decision Board Page
+			this.view = boardView;
+			entityKeys = this.view.init();
+			this.requestViewData(entityKeys, slug);
 		},
 		routeToHome: function() {
 			//Default route
+		},
+
+		//Data layer
+		requestViewData: function(entityKeys, slug) {
+			for(var i = 0; i < entityKeys.length; i++) {
+				(function(q, dataFactory, view) {
+					dataFactory.query(entityKeys[i],q).then(function(data) {
+						view.loadData(q, data);
+					}, function(error) {
+						view.loadData(q, null);
+					});
+				})(slug, this.data, this.view);
+			}
 		},
 
 		//Utility
