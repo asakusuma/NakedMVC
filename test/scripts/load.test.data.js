@@ -42,7 +42,7 @@ db.destroy(function() {
       type: 'Board',
       owner: 'Seth',
       title: 'A nice board',
-      cards: ['c1']
+      cards: ['c1', 'c2']
     });
 
     // Sample board 2

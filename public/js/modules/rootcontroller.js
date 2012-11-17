@@ -21,8 +21,8 @@ define( 'RootController', ['Eventable','BoardView','DataFactory'], function(Even
 		requestViewData: function(entityKeys, slug) {
 			for(var i = 0; i < entityKeys.length; i++) {
 				(function(q, dataFactory, view) {
-					dataFactory.query(entityKeys[i],q).then(function(data) {
-						view.loadData(q, data);
+					dataFactory.query(entityKeys[i],q).then(function(data, entityKey) {
+						view.loadData(entityKey, data);
 					}, function(error) {
 						view.loadData(q, null);
 					});

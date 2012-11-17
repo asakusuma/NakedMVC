@@ -41,7 +41,7 @@ define( 'DataFactory', ['Eventable', 'Promise', 'Model'], function(Eventable, Pr
 	            }).done(function( data ) {
 	            	var model = new Model(data);
 	            	modelCollection['_id'] = model;
-	             	promise.resolve(model);
+	             	promise.resolve(model, entityKey);
 	           	}).fail(function () {
 	           		promise.reject();
 	          	});

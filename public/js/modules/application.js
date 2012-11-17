@@ -2,7 +2,7 @@ require.config({
 	baseUrl: "/js/modules"
 });
 
-require( ['RootController', 'Eventable', 'Promise'], function(rootController, Eventable, Promise){
+require( ['RootController', 'Eventable', 'Promise', 'Templates'], function(rootController, Eventable, Promise, Templates){
 	var url = window.location.hash,
 		segments = [],
 		segment,
@@ -18,11 +18,15 @@ require( ['RootController', 'Eventable', 'Promise'], function(rootController, Ev
 	//Create a global event bus
 	window.app.bus = new Eventable();
 
+	//Add templates
+	window.app.templates = Templates;
+	console.log(Templates);
+
 	//Routing
 	if(url) {
 		url = url.substr(1);
 		segments = url.split('/');
-		
+
 		for(var i = 0; i < segments.length; i++) {
 			segment = segments[i];
 			if(!segment) { continue; }
