@@ -11,7 +11,8 @@
     "express": "3.0.2",
     "ejs": "*",
     "less-middleware": "*",
-    "cradle": "0.6.4"
+    "cradle": "0.6.4",
+    "async": "*"
   },
   "devDependencies": {
     "mocha": "*",

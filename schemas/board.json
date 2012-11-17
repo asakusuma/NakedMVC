@@ -1,6 +1,6 @@
 {
   "name": "Board",
-  "route": "board/",
+  "route": "/board",
   "fields": {
     "name": {
       "type": "string",
