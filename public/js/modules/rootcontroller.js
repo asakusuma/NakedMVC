@@ -8,6 +8,18 @@ define( 'RootController', ['Eventable','RootView','DataFactory'], function(Event
 			console.log(app.schemas);
 			this.view.init();
 		},
+		//Routes
+		routeToDB: function(slug) {
+			//Decision Board Page
+		},
+		routeToHome: function() {
+			//Default route
+		},
+
+		//Utility
+		notFound: function() {
+			//404
+		},
 		sayHi: function() {
 			alert('Title clicked!!');
 		}
