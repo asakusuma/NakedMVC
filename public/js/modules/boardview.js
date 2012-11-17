@@ -26,14 +26,14 @@ define( 'BoardView', ['Eventable'], function(Eventable) {
 		    }
 		},
 		renderCard: function(err, out) {
-			this.grid.add_widget(out, 2, 2);
+			this.grid.add_widget(out, 1, 1);
 		},
 		renderBoard: function(err, out) {
 			out = $(out);
   			this.renderEl(err, out);
   			this.grid = out.find('ul').gridster({
 		        widget_margins: [10, 10],
-		        widget_base_dimensions: [140, 140]
+		        widget_base_dimensions: [300, 300]
 		    }).data('gridster');
 		    this.populateBoard();
 		},
