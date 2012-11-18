@@ -17,7 +17,6 @@ define( 'BoardView', ['Eventable'], function(Eventable) {
 		},
 		loadMainBoard: function(data) {
 			this.board = data;
-			console.log(data);
 			dust.render("board", this.board.attributes, _.bind(this.renderBoard, this));
 		},
 		populateBoard: function() {

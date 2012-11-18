@@ -1,9 +1,9 @@
 define( 'Model', ['Eventable'], function(Eventable){
 
-  	function Model(data) {
+  	function Model(data, entityKey) {
   		this.attributes = data;
   	}
-  	
+
   	Model.prototype.get = function(key) {
   		return this.attributes[key];
   	}
