@@ -3,21 +3,28 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app",
-    "test": "mocha test/specs --recursive",
-    "testData": "node test/scripts/load.test.data.js"
+    "start": "node app"
   },
   "dependencies": {
-    "express": "3.0.2",
+    "express": "3.0.3",
     "ejs": "*",
     "less-middleware": "*",
-    "cradle": "0.6.4",
-    "async": "*"
-  },
-  "devDependencies": {
-    "mocha": "*",
-    "chai": "*",
-    "sinon-chai": "*",
-    "sinon": "*"
+    "connect-assetmanager": "*",
+    "requirejs": "*",
+    "dustjs-linkedin": "*",
+    "jquery": "*",
+    "dustfs": "*",
+    "watch": "*",
+    "underscore": "*",
+    "express-dust": "*",
+    "dustjs-helpers": "*",
+    "consolidate": "*",
+    "ejs-locals": "*",
+    "less-middleware": "*",
+    "swig": "~0.12.1",
+    "socket":"*",
+    "cradle":"*",
+    "async":"*",
+    "jsdom":"*"
   }
 }
