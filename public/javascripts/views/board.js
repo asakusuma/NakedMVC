@@ -10,10 +10,13 @@ define([
 		async, 
 		gridster
 	) {
-	var BoardView = function() {};
+	var BoardView = function() {
+		this.data = {};
+		_.bindAll(this,"postRender");
+	};
 	BoardView.prototype = new Eventable();
 	_.extend(BoardView.prototype, {
-		init: function(el) {
+		build: function(el) {
 			this.el = el;
 			this.data = {};
 			return {
@@ -31,12 +34,12 @@ define([
 		renderCards: function(err, out) {
 			if(err) throw err;
 			var cards = this.data.get('cards'),
-				row = 0,
-				col = 0;
+				row = 1,
+				col = 1;
   			this.el.append(out);
   			for(var i = 0; i < cards.length; i++) {
-  				cards[i].set('row',row);
-  				cards[i].set('col',col);
+  				cards[i].set('row',col);
+  				cards[i].set('col',row);
   				row = (row+1)%3;
   				if(row === 3) col++;
   			}
@@ -46,24 +49,32 @@ define([
   					callback(null, out);
   				});
   			}, _.bind(function(error, results) {
-  				var html = ""
-  					ul = this.el.find('ul');
+  				var html = "";
+  				this.ul = this.el.find('ul');
+  				console.log(results);
   				for(var i = 0; i < results.length; i++) {
   					html += results[i];
   				}
-  				ul.append(html);
-  				
-  				ul.gridster({
-        			widget_margins: [10, 10],
-        			widget_base_dimensions: [140, 140]
-    			});
-
+  				this.ul.append(html);
   				this.render();
   			},this));
 		},
 		render: function() {
 			this.trigger('rendered', this.el.html());
-		}
+		},
+		postRender: _.once(function() {
+			var ul = this.el.find('.gridster ul');
+			
+			$(function(){
+				ul.gridster({
+	    			widget_margins: [10, 10],
+	    			widget_base_dimensions: [300,300]
+				});
+				alert(ul.html());
+			});
+
+
+		})
 	});
 	return BoardView;
 });

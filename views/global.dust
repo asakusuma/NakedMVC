@@ -5,7 +5,6 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
     <link rel='stylesheet' href='/stylesheets/jquery.gridster.min.css' />
-    
     <script>
       window.app = {
         route: '{route}',
@@ -15,7 +14,9 @@
     </script>
   </head>
   <body>
-  	{markup|s}
+  	<div id="app">
+      {markup|s}
+    </div>
   	<script src="/socket.io/socket.io.js"></script>
     <script data-main="/javascripts/frontend-bootstrap.js" src="/javascripts/lib/require.js"></script>
   </body>

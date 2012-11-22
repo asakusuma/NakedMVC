@@ -72,7 +72,7 @@ function(components, routes, schema) {
         return function(req, res) {
           var params = req.params;
           var controller = new page.controllerClass();
-          controller.init(req.params, function(event, html) {
+          controller.init(req.params, function(html) {
             
             //BEGIN Workaround for weird behavior of req.params
             var params = {};
