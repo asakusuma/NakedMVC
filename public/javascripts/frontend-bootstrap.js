@@ -10,24 +10,16 @@ requirejs.config({
     },
     shim: {
         'jquery': {
-            //These script dependencies should be loaded before loading
-            //backbone.js
             deps: [],
-            //Once loaded, use the global 'Backbone' as the
-            //module value.
             exports: '$'
         },
         'dustjs-linkedin': {
-            //These script dependencies should be loaded before loading
-            //backbone.js
             deps: [],
-            //Once loaded, use the global 'Backbone' as the
-            //module value.
             exports: 'dust'
         }
     }
 });
 
-requirejs(['components', 'routes', 'schema'], function() {
-
+requirejs(['router'], function(router) {
+    router.start(window.app);
 });

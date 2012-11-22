@@ -70,12 +70,23 @@ function(components, routes, schema) {
       page.route = route;
       app.get(route, (function(page) {
         return function(req, res) {
+          var params = req.params;
           var controller = new page.controllerClass();
           controller.init(req.params, function(event, html) {
+            
+            //BEGIN Workaround for weird behavior of req.params
+            var params = {};
+            for(var key in req.params) {
+              params[key] = req.params[key];
+            }
+            //END Workaround for weird behavior of req.params
+
             res.render('global', {
               title: page.title,
               markup: html,
-              route: req.route.path
+              route: req.route.path,
+              url: req.url,
+              params: JSON.stringify(params)
             });
           });
         };
