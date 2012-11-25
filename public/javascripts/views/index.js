@@ -2,7 +2,7 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 	var IndexView = function() {};
 	IndexView.prototype = new Eventable();
 	_.extend(IndexView.prototype, {
-		init: function(el) {
+		build: function(el) {
 			this.el = el;
 			this.data = {};
 			return {
@@ -11,13 +11,16 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 		},
 		setData: function(query, data) {
 			this.data[query] = JSON.stringify(data);
-			dust.render("index", {numBoards: JSON.stringify(data)}, _.bind(this.render,this));
+			data = {boards: data};
+			dust.render("index", data, _.bind(this.render,this));
 		},
 		render: function(err, out) {
 			if(err) throw err;
   			this.el.append(out);
 			this.trigger('rendered', this.el.html());
-			//this.el.html()
+		},
+		postRender: function() {
+			//nothing for now
 		}
 	});
 	return IndexView;

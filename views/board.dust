@@ -1,10 +1,8 @@
-<div class="board">
+<div class="board container">
 	<h2>{title}</h2>
-	<div id="app" class="container">
-		<div class="gridster">
-		    <ul style="height: 480px; position: relative;">
-		     
-		    </ul>
-		</div>
-    </div>
+	<div class="gridster">
+	    <ul style="height: 480px; position: relative;">
+	     
+	    </ul>
+	</div>
 </div>

@@ -65,7 +65,7 @@ function(components, routes, schema) {
 
   //Setup routes that hit pages
   for(route in routes) {
-    page = components.page[routes[route]];
+    page = components.page[routes[route].page];
     if(page) {
       page.route = route;
       app.get(route, (function(page) {

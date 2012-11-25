@@ -14,11 +14,9 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			this.view = new View();
 			var query = this.view.build(this.el);
 			if(renderMarkup) {
-				console.log("RenderMarkup");
 				this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
 				if(params.id) {
 					query.id = params.id;
-
 					//Take request from view, inject context, and
 					//forward request to datafactory
 					DataFactory.request(query).then(function(num) {

@@ -92,6 +92,7 @@ define('dataproxy', [
                     entityKey: entityKey,
                     ids: doc[entityKey]
                   }).then(function(data) {
+
                     cb(null, {
                       entityKey: entityKey,
                       data: data
@@ -112,10 +113,16 @@ define('dataproxy', [
         }, this));
         return promise;
       } else if(query.ids && query.entityKey) {
+        console.log(query);
         this.async.map(query.ids, _.bind(
           function(id, cb) {
             this.db.view(query.entityKey + '/all', { key: id }, _.bind(function(err, doc) {
-              cb(err, this.createModel(doc[0].value));
+              if(err) throw err;
+              if(doc.length > 0) {
+                cb(err, this.createModel(doc[0].value));
+              } else {
+                cb(err);
+              }
             },this));
           },
           this), function(err, results) {
