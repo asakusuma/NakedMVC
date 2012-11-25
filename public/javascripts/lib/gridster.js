@@ -3019,7 +3019,6 @@ define(['jquery', 'app/dom'],function(jQuery, dom) {
     * @return {Object} Returns the instance of the Gridster class.
     */
     fn.add_style_tag = function(css) {
-    	/*
       var d = document;
       var tag = d.createElement('style');
 
@@ -3031,7 +3030,6 @@ define(['jquery', 'app/dom'],function(jQuery, dom) {
       } else {
         tag.appendChild(document.createTextNode(css));
       }
-      */
       return this;
     };
 

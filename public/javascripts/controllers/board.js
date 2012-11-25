@@ -33,7 +33,7 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 		},
 		onRenderMarkupFinished: function(event, html) {
 			//if on the client
-			if(typeof window !== 'undefined') {
+			if(typeof window !== 'undefined' || true) {
 				this.view.postRender();
 			}
 			this.renderCallback(html);
