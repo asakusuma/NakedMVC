@@ -62,18 +62,15 @@ define([
 		render: function() {
 			this.trigger('rendered', this.el.html());
 		},
-		postRender: _.once(function() {
-			var ul = this.el.find('.gridster ul');
-			
+		postRender: function() {
+			var ul = this.el.find('.gridster ul');	
 			$(function(){
 				ul.gridster({
 	    			widget_margins: [10, 10],
 	    			widget_base_dimensions: [240,240]
 				});
 			});
-
-
-		})
+		}
 	});
 	return BoardView;
 });
