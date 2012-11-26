@@ -9,7 +9,8 @@
       window.app = {
         route: '{route}',
         url: '{url}',
-        params: {params|s}
+        params: {params|s},
+        routes: {routes|s}
       };
     </script>
   </head>

@@ -63,9 +63,11 @@ function(components, routes, schema) {
 
    server.listen(3000);
 
+   var routeMap = [];
+
   //Setup routes that hit pages
   for(route in routes) {
-    page = components.page[routes[route].page];
+    page = components.page[routes[route]];
     if(page) {
       page.route = route;
       app.get(route, (function(page) {
@@ -86,12 +88,20 @@ function(components, routes, schema) {
               markup: html,
               route: req.route.path,
               url: req.url,
-              params: JSON.stringify(params)
+              params: JSON.stringify(params),
+              routes: JSON.stringify(routeMap)
             });
           });
         };
       })(page));
     }
+  }
+
+  for(var i = 0; i < app.routes.get.length; i++) {
+    routeMap.push({
+      route: app.routes.get[i].path,
+      regex: app.routes.get[i].regexp.toString()
+    });
   }
 
   //Output schema file for client

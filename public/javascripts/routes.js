@@ -5,12 +5,5 @@ define(function () {
     	"/boards/:id":"board"
     };
 
-    for(var route in routes) {
-    	routes[route] = {
-    		regex: '',
-    		page: routes[route]
-    	}
-    }
-
     return routes;
 });
