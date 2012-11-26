@@ -4,14 +4,16 @@ define('dataproxy', [
     'cradle',
     'async',
     'schema',
-    'models/model'
+    'models/model',
+    'underscore'
   ], function (
     Eventable, 
     Promise, 
     Cradle, 
     Async, 
     Schema,
-    Model
+    Model,
+    _
   ) {
 	var DataProxy = new Eventable();
 	DataProxy = _.extend(DataProxy, {
@@ -40,7 +42,7 @@ define('dataproxy', [
 		_somePrivateMethod: function() {
 
 		},
-    createModel: function(attrs) {
+    _createModel: function(attrs) {
       if(this.hash[attrs['_id']]) {
         console.log("Cache hit!");
         return this.hash[attrs['_id']];
@@ -52,7 +54,7 @@ define('dataproxy', [
     },
     request: function(query) {
       if(query.ids) {
-        return this.query(query);
+        return this._query(query);
       } else if(query.id) {
         if(this.hash[query.id]) {
           console.log("Cache Hit!");
@@ -61,9 +63,9 @@ define('dataproxy', [
           return promise;
         }
       }
-      return this.query(query);
+      return this._query(query);
     },
-		query: function(query) {
+		_query: function(query) {
 			var promise = new Promise();
 			if(query.id) {
 				this.db.get(query.id, _.bind(function(err, doc) {
@@ -104,10 +106,10 @@ define('dataproxy', [
                   for(var i = 0; i < results.length; i++) {
                     doc[results[i].entityKey] = results[i].data;
                   }
-                  promise.resolve(this.createModel(doc));
+                  promise.resolve(this._createModel(doc));
               },this)); 
             } else {
-              promise.resolve(this.createModel(doc));
+              promise.resolve(this._createModel(doc));
             }
           }
         }, this));
@@ -119,7 +121,7 @@ define('dataproxy', [
             this.db.view(query.entityKey + '/all', { key: id }, _.bind(function(err, doc) {
               if(err) throw err;
               if(doc.length > 0) {
-                cb(err, this.createModel(doc[0].value));
+                cb(err, this._createModel(doc[0].value));
               } else {
                 cb(err);
               }

@@ -1,9 +1,4 @@
-var express = require('express')
-  , app = express()
-  , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server)
-  , http = require('http')
-  , path = require('path')
+var path = require('path')
   , requirejs = require('requirejs')
   , dust = require('dustjs-linkedin')
   , dustfs = require('dustfs')
@@ -37,9 +32,12 @@ requirejs.config({
 
 templates.register(dust);
 
-requirejs(['components', 'routes', 'schema'],
-function(components, routes, schema) {
-  var page, route;
+requirejs(['components', 'routes', 'schema', 'app/application', 'dataproxy'],
+function(components, routes, schema, application, dataproxy) {
+  var page, route,
+    app = application.app,
+    express = application.express,
+    server = application.server;
 
   app.engine('dust', cons.dust);
   app.configure(function(){
@@ -110,10 +108,16 @@ function(components, routes, schema) {
     res.send(schema.script);
   });
 
-  io.sockets.on('connection', function (socket) {
+  application.io.sockets.on('connection', function (socket) {
     //socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-      console.log(data);
+    socket.on('dp_request', function (data) {
+      var args = [];
+      for(var index in data.arguments) {
+        args.push(data.arguments[index]);
+      }
+      dataproxy[data.name].apply(dataproxy, args).then(function(results) {
+        socket.emit('dp_response_'+data.name, results);
+      });
     });
   });
 });
