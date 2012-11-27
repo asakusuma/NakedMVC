@@ -15,7 +15,7 @@ define(['lib/underscore'],function(_){
   }
 
   Promise.prototype.then = function(successCallback, failureCallback, con) {
-    this.success = successCallback;
+    if(successCallback) this.success = successCallback;
     if(failureCallback) this.failure = failureCallback;
     this.registered = true;
     if(con) { this.context = con; }
