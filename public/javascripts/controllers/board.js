@@ -12,16 +12,15 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			}
 			this.view = new View();
 			var query = this.view.build(this.el);
-
 			if(renderMarkup) {
 				this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-				console.log(params);
 				if(params.id) {
 					query.id = params.id;
 					//Take request from view, inject context, and
 					//forward request to datafactory
-					DataFactory.request(query).then(function(num) {
-						this.view.setData(query, num);
+					console.log("Request board data");
+					DataFactory.request(query).then(function(data) {
+						this.view.setData(query, data);
 					}, function() {
 
 					}, this);
@@ -35,7 +34,14 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			if(typeof window !== 'undefined') {
 				this.view.postRender();
 			}
+			console.log("Rendered Board Controller");
 			this.renderCallback(html);
+		},
+		remove: function() {
+			this.off();
+			this.el.empty();
+			this.el = null;
+			this.view.remove();
 		}
 	});
 	return BoardController;

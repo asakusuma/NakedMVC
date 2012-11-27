@@ -12,7 +12,6 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 
 		//Convert regex strings to regex objs
 		for(var i = 0; i < this.app.routes.length; i++) {
-			console.log(this.app.routes[i].regex);
 			this.app.routes[i].regex = new RegExp(this.app.routes[i].regex.substring(1,this.app.routes[i].regex.length-3),'i');
 		}
 
@@ -62,7 +61,8 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 			var page = this.components.page[this.routes[path]];
 			if(this.rootController) {
 				//remove or do gargabe collection
-				this.$('#app').html("");
+				this.rootController.remove();
+				delete this.rootController;
 			}
 			if(pushState) {
 				window.history.pushState({}, page.title, route);
@@ -73,7 +73,7 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 	}
 
 	Router.prototype.viewRendered = function() {
-		alert("Rendered!");
+		
 	}
 
 	return new Router(components, routes, schema, $);

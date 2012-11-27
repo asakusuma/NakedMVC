@@ -21,6 +21,11 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 		},
 		postRender: function() {
 			//nothing for now
+		},
+		remove: function() {
+			this.off();
+			this.el.empty();
+			this.el = null;
 		}
 	});
 	return IndexView;

@@ -1,14 +1,12 @@
 define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventable, View, $, DataFactory) {
 	var IndexController = function() {};
-	IndexController = function() {};
 	IndexController.prototype = new Eventable();
 	_.extend(IndexController.prototype, {
-		init: function(params, callback, el) {
-			var renderMarkup = true;
+		init: function(params, callback, el, renderMarkup) {
+			if(renderMarkup !== false) renderMarkup = true;
 			this.renderCallback = callback;
 			if(el) {
 				this.el = el;
-				renderMarkup = false;
 			} else {
 				this.el = $('<div></div>');
 			}
@@ -16,8 +14,8 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			var query = this.view.build(this.el);
 			if(renderMarkup) {
 				this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-				DataFactory.request(query).then(function(num) {
-					this.view.setData(query, num);
+				DataFactory.request(query).then(function(data) {
+					this.view.setData(query, data);
 				}, function() {
 
 				}, this);
@@ -30,7 +28,14 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			if(typeof window !== 'undefined') {
 				this.view.postRender();
 			}
+			console.log("Rendered Index Controller");			
 			this.renderCallback(html);
+		},
+		remove: function() {
+			this.off();
+			this.el.empty();
+			this.el = null;
+			this.view.remove();
 		}
 	});
 	return IndexController;

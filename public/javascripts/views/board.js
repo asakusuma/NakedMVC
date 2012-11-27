@@ -24,6 +24,7 @@ define([
 			};
 		},
 		setData: function(query, data) {
+			console.log("board view render");
 			this.data = data;
 			dust.render("board", data.attributes, _.bind(this.renderCards,this));
 		},
@@ -70,6 +71,11 @@ define([
 	    			widget_base_dimensions: [240,240]
 				});
 			});
+		},
+		remove: function() {
+			this.off();
+			this.el.empty();
+			this.el = null;
 		}
 	});
 	return BoardView;

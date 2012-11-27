@@ -34,6 +34,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
       var host = 'http://localhost:3000',
       output = "define(['base/promise', 'models/model'], function(Promise, Model) { \n";
       output += "function DataProxy(io) { \n";
+      output += "_.bindAll(this);\n";
       output += "this.socket = io.connect('" + host + "');\n";
       output += "} \n";
 
@@ -58,9 +59,14 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
 
           output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments });\n";
 
-          output += "this.socket.on('dp_response_" + property + "', _.bind(function(data) { \n";
+          output += "var cb;";
+          output += "cb = _.bind(function(data) { \n";
+            output += "this.socket.removeListener('dp_response_" + property + "', cb);\n";
             output += "promise.resolve(this.modelize(data)); \n";
-          output += "}, this));"
+          output += "}, this);"
+
+          output += "this.socket.on('dp_response_" + property + "', cb);"
+
           output += "return promise;\n";
           output += "} \n";
         }
