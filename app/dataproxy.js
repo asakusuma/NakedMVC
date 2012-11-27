@@ -65,9 +65,21 @@ define('dataproxy', [
       return promise;
     },
     updateBoard: function(board) {
-      if(board.attributes.cards) {
-        delete board.attributes.cards;
+      var foreignKeys = this._getForeignKeys(board.attributes);
+
+      //Update foreign
+      for(var i = 0; i < foreignKeys.length; i++) {
+        var children = board.attributes[foreignKeys[i]];
+        for(var c = 0; c < children.length; i++) {
+          this.update(children[c]);
+        }
       }
+
+      //Delete foreign
+      for(var i = 0; i < foreignKeys.length; i++) {
+        delete board.attributes[foreignKeys[i]];
+      }
+
       return this._update(board.attributes);
     },
     _update: function(obj) {
@@ -93,6 +105,20 @@ define('dataproxy', [
       }
       return this._query(query);
     },
+    _getForeignKeys: function(doc) {
+      var foreignKeys = [];
+      for(var key in doc) {
+        var schemaName = key;
+        if(schemaName[schemaName.length-1] === 's') {
+          schemaName = schemaName.substring(0,schemaName.length - 1);
+        }
+        schemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
+        if(Schema.obj[schemaName]) {
+          foreignKeys.push(key);
+        }
+      }
+      return foreignKeys;
+    },
 		_query: function(query) {
 			var promise = new Promise();
 			if(query.id) {
@@ -100,19 +126,7 @@ define('dataproxy', [
           if(err) {
             promise.reject(err);
           } else {
-            var foreignKeys = [];
-
-            //Determine if any fields contain foreign IDS
-            for(var key in doc) {
-              var schemaName = key;
-              if(schemaName[schemaName.length-1] === 's') {
-                schemaName = schemaName.substring(0,schemaName.length - 1);
-              }
-              schemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
-              if(Schema.obj[schemaName]) {
-                foreignKeys.push(key);
-              }
-            }
+            var foreignKeys = this._getForeignKeys(doc);
 
             if(foreignKeys.length > 0) {
               //Replace foreign IDS with actual data
