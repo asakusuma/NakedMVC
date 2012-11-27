@@ -15,8 +15,8 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 			this.app.routes[i].regex = new RegExp(this.app.routes[i].regex.substring(1,this.app.routes[i].regex.length-3),'i');
 		}
 
-		this.loadRoute(this.app.route, true);
-		this.$('a.push-link').click(_.bind(this.pushLinkClicked, this));
+		this.loadRoute(window.location.pathname, true);
+		this.$('body').on('click', 'a.push-link', _.bind(this.pushLinkClicked, this));
 		window.onpopstate = _.bind(this.onPopState, this);	
 	}
 
@@ -65,6 +65,7 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 				delete this.rootController;
 			}
 			if(pushState) {
+				console.log(route);
 				window.history.pushState({}, page.title, route);
 			}
 			this.rootController = new page.controllerClass();
