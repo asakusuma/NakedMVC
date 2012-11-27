@@ -41,6 +41,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
       output += "if(_.isArray(data)) { \n";
       output += "var models = [];\n";
         output += "for(var i = 0; i < data.length; i++) { models.push(this.modelize(data[i])); }\n";
+        output += "return models; \n";
       output += "} else if(_.isObject(data) && data.attributes) {\n";
         output += "for(var key in data.attributes) {\n";
           output += "data.attributes[key] = this.modelize(data.attributes[key]);"
@@ -58,7 +59,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
           output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments });\n";
 
           output += "this.socket.on('dp_response_" + property + "', _.bind(function(data) { \n";
-            output += "promise.resolve(this.modelize(JSON.parse(data))); \n";
+            output += "promise.resolve(this.modelize(data)); \n";
           output += "}, this));"
           output += "return promise;\n";
           output += "} \n";
