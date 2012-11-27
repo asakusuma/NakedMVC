@@ -28,6 +28,7 @@ define([
 		setData: function(query, data) {
 			console.log("board view render");
 			this.data = data;
+			console.log(this.data);
 			if(this.rendered && typeof window !== 'undefined') {
 				this.postRender();
 			} else {

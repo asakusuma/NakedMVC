@@ -52,6 +52,34 @@ define('dataproxy', [
         return n;
       }
     },
+    update: function(model) {
+      var promise = new Promise(),
+        map = {
+          Board: 'updateBoard'
+        };
+      if(model.attributes.type && map[model.attributes.type]) {
+        promise = this[map[model.attributes.type]](model);
+      } else {
+        promise.reject();
+      }
+      return promise;
+    },
+    updateBoard: function(board) {
+      if(board.attributes.cards) {
+        delete board.attributes.cards;
+      }
+      return this._update(board.attributes);
+    },
+    _update: function(obj) {
+      var promise = new Promise();
+      if(obj._id) {
+        this.db.merge(obj._id, obj, function (err, res) {
+          if(err) promise.reject();
+          promise.resolve();
+        });
+      }
+      return promise;
+    },
     request: function(query) {
       if(query.ids) {
         return this._query(query);

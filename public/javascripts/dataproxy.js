@@ -4,8 +4,8 @@ _.bindAll(this);
 this.models = {};
 this.socket = io.connect('http://localhost:3000');
 } 
-DataProxy.prototype.modelChanged = function(data) { 
-console.log('Model Changed: ' + JSON.stringify(data));
+DataProxy.prototype.modelChanged = function(event, data) { 
+console.log(data);this.update(data);
 }
 DataProxy.prototype.modelize = function(data) { 
 if(_.isArray(data)) { 
@@ -63,6 +63,22 @@ var cb;cb = _.bind(function(data) {
 this.socket.removeListener('dp_response_getNumBoards', cb);
 promise.resolve(this.modelize(data)); 
 }, this);this.socket.on('dp_response_getNumBoards', cb);return promise;
+} 
+DataProxy.prototype.update = function() { 
+var promise = new Promise();
+this.socket.emit('dp_request', { name: 'update', arguments: arguments });
+var cb;cb = _.bind(function(data) { 
+this.socket.removeListener('dp_response_update', cb);
+promise.resolve(this.modelize(data)); 
+}, this);this.socket.on('dp_response_update', cb);return promise;
+} 
+DataProxy.prototype.updateBoard = function() { 
+var promise = new Promise();
+this.socket.emit('dp_request', { name: 'updateBoard', arguments: arguments });
+var cb;cb = _.bind(function(data) { 
+this.socket.removeListener('dp_response_updateBoard', cb);
+promise.resolve(this.modelize(data)); 
+}, this);this.socket.on('dp_response_updateBoard', cb);return promise;
 } 
 DataProxy.prototype.request = function() { 
 var promise = new Promise();

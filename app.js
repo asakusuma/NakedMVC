@@ -110,6 +110,12 @@ function(components, routes, schema, application, dataproxy) {
 
   application.io.sockets.on('connection', function (socket) {
     //socket.emit('news', { hello: 'world' });
+
+    socket.on('update_model', function (data) {
+      console.log("Update Model");
+      console.log(data);
+    });
+
     socket.on('dp_request', function (data) {
       var args = [];
       for(var index in data.arguments) {
