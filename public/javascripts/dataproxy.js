@@ -3,9 +3,19 @@ function DataProxy(io) {
 _.bindAll(this);
 this.models = {};
 this.socket = io.connect('http://localhost:3000');
+this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));} 
+DataProxy.prototype.serverModelsChanged = function(data) {  
+if(data.attributes._id) {
+	if(this.models[data._id]) {
+		_.extend(this.models[data._id].attributes, data.attributes);
+		this.models[data._id].trigger('change');
+	} else {
+		//new model
+	}
+}
 } 
 DataProxy.prototype.modelChanged = function(event, data) { 
-console.log(data);this.update(data);
+this.update(data);
 }
 DataProxy.prototype.modelize = function(data) { 
 if(_.isArray(data)) { 

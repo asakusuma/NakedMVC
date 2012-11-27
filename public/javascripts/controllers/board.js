@@ -18,7 +18,6 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 				query.id = params.id;
 				//Take request from view, inject context, and
 				//forward request to datafactory
-				console.log("Request board data");
 				DataFactory.request(query).then(function(data) {
 					this.view.setData(query, data);
 				}, function() {
@@ -32,7 +31,6 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			if(typeof window !== 'undefined') {
 				this.view.postRender();
 			}
-			console.log("Rendered Board Controller");
 			this.renderCallback(html);
 		},
 		remove: function() {

@@ -32,19 +32,62 @@ define('dataproxy', [
 			});
 			this.db = new cradle.Connection().database(dbName);
       this.hash = {};
+      this.queryListeners = {};
+
+      this.changeFeed = this.db.changes({ 
+        include_docs: true,
+        since: 'now'
+      });
+
+      this.changeFeed.on('change', _.bind(this._dataChanged,this));
 		},
 		getNumBoards: function(success, error, context) {
 			var promise = new Promise();
 			promise.resolve(2);
 			return promise;
 		},
-		//query can't call this method
+		//frontend can't call this method
 		_somePrivateMethod: function() {
 
 		},
+    _dataChanged: function(change) {
+      if(change.doc) {
+        if(this.queryListeners[change.id]) {
+          this.request({
+            id: change.id
+          }).then(_.bind(function(results) {
+            this.queryListeners[change.id].trigger('change', results);
+          },this));
+        } else if(this.queryListeners[change.doc.type]) {
+          this.request({
+            entityKey: change.doc.type
+          }).then(_.bind(function(results) {
+            this.queryListeners[change.doc.type].trigger('change', results);
+          },this));
+        }
+      }
+    },
+    _registerQuery: function(command, callback) {
+      if(command.name === 'request') {
+        var query = command.arguments[0],
+          queryKey;
+
+        if(query.id) {
+          queryKey = query.id;
+        } else if(query.entityKey) {
+          queryKey = query.entityKey;
+        }
+
+        if(queryKey) {
+          if(!this.queryListeners[queryKey]) {
+            this.queryListeners[queryKey] = new Eventable();
+          }
+          this.queryListeners[queryKey].on('change',callback);
+        }
+      }
+    },
     _createModel: function(attrs) {
       if(this.hash[attrs['_id']]) {
-        console.log("Cache hit!");
         return this.hash[attrs['_id']];
       } else {
         var n = new Model(attrs);
@@ -98,7 +141,6 @@ define('dataproxy', [
         return this._query(query);
       } else if(query.id) {
         if(this.hash[query.id]) {
-          console.log("Cache Hit!");
           var promise = new Promise();
           promise.resolve(this.hash[query.id]);
           return promise;
@@ -158,7 +200,6 @@ define('dataproxy', [
         }, this));
         return promise;
       } else if(query.ids && query.entityKey) {
-        console.log(query);
         this.async.map(query.ids, _.bind(
           function(id, cb) {
             this.db.view(query.entityKey + '/all', { key: id }, _.bind(function(err, doc) {
