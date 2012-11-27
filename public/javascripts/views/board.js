@@ -43,14 +43,25 @@ define([
 			if(err) throw err;
 			var cards = this.data.get('cards'),
 				row = 1,
-				col = 1;
+				col = 1,
+				layout = this.data.get('layout');
   			this.el.append(out);
+
   			for(var i = 0; i < cards.length; i++) {
   				cards[i].set('row',col);
   				cards[i].set('col',row);
   				row = (row+1)%3;
   				if(row === 3) col++;
   			}
+  			if(layout) {
+  				for(var i = 0; i < cards.length; i++) {
+  					if(layout[cards[i].get('_id')]) {
+  						cards[i].set('row',layout[cards[i].get('_id')].row);
+  						cards[i].set('col',layout[cards[i].get('_id')].col);
+  					}
+  				}
+  			}
+  			
   			async.map(cards, function(item, callback) {
   				dust.render("board-card", item.attributes, function(err, out) {
   					if(err) throw err;

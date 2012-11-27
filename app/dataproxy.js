@@ -70,7 +70,7 @@ define('dataproxy', [
       //Update foreign
       for(var i = 0; i < foreignKeys.length; i++) {
         var children = board.attributes[foreignKeys[i]];
-        for(var c = 0; c < children.length; i++) {
+        for(var c = 0; c < children.length; c++) {
           this.update(children[c]);
         }
       }
@@ -85,6 +85,7 @@ define('dataproxy', [
     _update: function(obj) {
       var promise = new Promise();
       if(obj._id) {
+        _.extend(this.hash[obj._id].attributes, obj);
         this.db.merge(obj._id, obj, function (err, res) {
           if(err) promise.reject();
           promise.resolve();
