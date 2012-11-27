@@ -58,7 +58,6 @@ define([
   			}, _.bind(function(error, results) {
   				var html = "";
   				this.ul = this.el.find('ul');
-  				console.log(results);
   				for(var i = 0; i < results.length; i++) {
   					html += results[i];
   				}
@@ -83,11 +82,16 @@ define([
 			}, this));
 		},
 		cardDragged: function() {
-			var cards = this.data.get('cards');
+			var cards = this.data.get('cards'),
+				layout = {};
 			for(var i = 0; i < cards.length; i++) {
 				var cardEl = $('li[data-card-id="' + cards[i].get('_id') + '"]');
-				alert(cardEl.attr('data-col') + " - " + cardEl.attr('data-row'));
+				layout[cards[i].get('_id')] = {
+					col: cardEl.attr('data-col'),
+					row: cardEl.attr('data-row')
+				};
 			}
+			this.data.set('layout', layout);
 		},
 		remove: function() {
 			this.off();

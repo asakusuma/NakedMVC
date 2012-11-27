@@ -35,8 +35,13 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
       output = "define(['base/promise', 'models/model'], function(Promise, Model) { \n";
       output += "function DataProxy(io) { \n";
       output += "_.bindAll(this);\n";
+      output += "this.models = {};\n";
       output += "this.socket = io.connect('" + host + "');\n";
       output += "} \n";
+
+      output += "DataProxy.prototype.modelChanged = function(event, data) { \n";
+        output += "console.log('Model Changed: ' + JSON.stringify(data));\n";
+      output += "}\n";
 
       output += "DataProxy.prototype.modelize = function(data) { \n";
       output += "if(_.isArray(data)) { \n";
@@ -45,9 +50,17 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
         output += "return models; \n";
       output += "} else if(_.isObject(data) && data.attributes) {\n";
         output += "for(var key in data.attributes) {\n";
-          output += "data.attributes[key] = this.modelize(data.attributes[key]);"
+          output += "data.attributes[key] = this.modelize(data.attributes[key]);\n";
         output += "} \n";
-        output += "return new Model(data.attributes);\n";
+        output += "var model;\n";
+        output += "if(this.models[data.attributes._id]) {\n";
+          output += "model = this.models[data.attributes._id]\n";
+          output += " } else { \n";
+          output += "model = new Model(data.attributes);\n";
+          output += "model.on('change', _.bind(this.modelChanged, this));"
+          output += " }";
+        output += "return model;\n";
+
       output += "} else { return data; } \n";
       output += "}\n";
 

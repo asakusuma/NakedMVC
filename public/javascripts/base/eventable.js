@@ -1,6 +1,7 @@
-define(['jquery'],function($){
+define(['jquery', 'lib/underscore'],function($,_){
 
   function Eventable() {
+    _.bindAll(this);
     this.proxy = $({});
   }
 
