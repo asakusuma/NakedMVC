@@ -1,4 +1,4 @@
-<li data-row="{row}" data-col="{col}" data-sizex="1" data-sizey="1">
+<li data-row="{row}" data-col="{col}" data-sizex="1" data-sizey="1" data-card-id="{_id}">
 	<div class="card">
 		<h3>{title}</h3>
 		<h4>{subtitle}</h4>

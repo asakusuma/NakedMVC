@@ -11,17 +11,14 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 				this.el = $('<div></div>');
 			}
 			this.view = new View();
-			var query = this.view.build(this.el);
-			if(renderMarkup) {
-				this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-				DataFactory.request(query).then(function(data) {
-					this.view.setData(query, data);
-				}, function() {
+			var query = this.view.build(this.el, !renderMarkup);
 
-				}, this);
-			} else {
-				this.view.postRender();
-			}
+			this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
+			DataFactory.request(query).then(function(data) {
+				this.view.setData(query, data);
+			}, function() {
+
+			}, this);
 		},
 		onRenderMarkupFinished: function(event, html) {
 			//if on the client

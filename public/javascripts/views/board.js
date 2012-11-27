@@ -16,9 +16,11 @@ define([
 	};
 	BoardView.prototype = new Eventable();
 	_.extend(BoardView.prototype, {
-		build: function(el) {
+		build: function(el, rendered) {
+			this.rendered = rendered;
 			this.el = el;
 			this.data = {};
+			_.bindAll(this);
 			return {
 				entityKey: "boards"
 			};
@@ -26,7 +28,11 @@ define([
 		setData: function(query, data) {
 			console.log("board view render");
 			this.data = data;
-			dust.render("board", data.attributes, _.bind(this.renderCards,this));
+			if(this.rendered && typeof window !== 'undefined') {
+				this.postRender();
+			} else {
+				dust.render("board", data.attributes, _.bind(this.renderCards,this));
+			}
 		},
 		setDataError: function(query) {
 			this.el.html("<h1>Fatal Data Error</h1>");
@@ -61,16 +67,27 @@ define([
   			},this));
 		},
 		render: function() {
+			this.rendered = true;
 			this.trigger('rendered', this.el.html());
 		},
 		postRender: function() {
 			var ul = this.el.find('.gridster ul');	
-			$(function(){
-				ul.gridster({
+			$(_.bind(function(){
+				this.gridster = ul.gridster({
 	    			widget_margins: [10, 10],
-	    			widget_base_dimensions: [240,240]
-				});
-			});
+	    			widget_base_dimensions: [240,240],
+	    			draggable: {
+		                stop: _.bind(this.cardDragged,this)
+		            }
+				}).data('gridster');
+			}, this));
+		},
+		cardDragged: function() {
+			var cards = this.data.get('cards');
+			for(var i = 0; i < cards.length; i++) {
+				var cardEl = $('li[data-card-id="' + cards[i].get('_id') + '"]');
+				alert(cardEl.attr('data-col') + " - " + cardEl.attr('data-row'));
+			}
 		},
 		remove: function() {
 			this.off();

@@ -11,23 +11,21 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 				this.el = $('<div></div>');
 			}
 			this.view = new View();
-			var query = this.view.build(this.el);
-			if(renderMarkup) {
-				this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-				if(params.id) {
-					query.id = params.id;
-					//Take request from view, inject context, and
-					//forward request to datafactory
-					console.log("Request board data");
-					DataFactory.request(query).then(function(data) {
-						this.view.setData(query, data);
-					}, function() {
+			var query = this.view.build(this.el, !renderMarkup);
 
-					}, this);
-				}
-			} else {
-				this.view.postRender();
+			this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
+			if(params.id) {
+				query.id = params.id;
+				//Take request from view, inject context, and
+				//forward request to datafactory
+				console.log("Request board data");
+				DataFactory.request(query).then(function(data) {
+					this.view.setData(query, data);
+				}, function() {
+
+				}, this);
 			}
+
 		},
 		onRenderMarkupFinished: function(event, html) {
 			//if on the client
