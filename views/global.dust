@@ -18,7 +18,7 @@
   	<div id="app">
       {markup|s}
     </div>
-    <a href="http://linkedin.com">Go somewhere</a>
+    <footer><a class="push-link" href="/">Home</a></footer>
   	<script src="/socket.io/socket.io.js"></script>
     <script data-main="/javascripts/frontend-bootstrap.js" src="/javascripts/lib/require.js"></script>
   </body>
