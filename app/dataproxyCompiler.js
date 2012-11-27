@@ -40,7 +40,6 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
       output += "} \n";
 
       output += "DataProxy.prototype.modelChanged = function(event, data) { \n";
-        output += "console.log(data);";
         output += "this.update(data);\n";
       output += "}\n";
 
