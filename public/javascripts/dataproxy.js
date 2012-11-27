@@ -26,67 +26,59 @@ model.on('change', _.bind(this.modelChanged, this)); }return model;
 }
 DataProxy.prototype.off = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'off', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_off', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_off', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'off', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.on = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'on', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_on', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_on', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'on', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.trigger = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'trigger', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_trigger', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_trigger', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'trigger', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.init = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'init', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_init', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_init', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'init', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.getNumBoards = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'getNumBoards', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_getNumBoards', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_getNumBoards', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'getNumBoards', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.update = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'update', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_update', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_update', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'update', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.updateBoard = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'updateBoard', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_updateBoard', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_updateBoard', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'updateBoard', arguments: arguments }, cb);
+return promise;
 } 
 DataProxy.prototype.request = function() { 
 var promise = new Promise();
-this.socket.emit('dp_request', { name: 'request', arguments: arguments });
-var cb;cb = _.bind(function(data) { 
-this.socket.removeListener('dp_response_request', cb);
+var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.on('dp_response_request', cb);return promise;
+}, this);this.socket.emit('dp_request', { name: 'request', arguments: arguments }, cb);
+return promise;
 } 
 return new DataProxy(io); 
 });

@@ -1,8 +1,8 @@
-define(function(){
+define(['lib/underscore'],function(_){
 
   function Promise() {
     this.success = function() {},
-    this.failure = function() {},
+    this.failure = function() { console.log ("Promise rejected"); },
     this.context = {},
     this.registered = false,
     // 0 = waiting
@@ -11,11 +11,12 @@ define(function(){
     this.status = 0,
     this.resolveArgs = false,
     this.rejectArgs = false;
+    _.bindAll(this);
   }
 
   Promise.prototype.then = function(successCallback, failureCallback, con) {
     this.success = successCallback;
-    this.failure = failureCallback;
+    if(failureCallback) this.failure = failureCallback;
     this.registered = true;
     if(con) { this.context = con; }
     if(this.status === 1) { this.resolve(); }

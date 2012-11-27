@@ -71,15 +71,11 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
           output += "DataProxy.prototype." + property + " = function() { \n";
           output += "var promise = new Promise();\n";
 
-          output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments });\n";
-
-          output += "var cb;";
-          output += "cb = _.bind(function(data) { \n";
-            output += "this.socket.removeListener('dp_response_" + property + "', cb);\n";
+          output += "var cb = _.bind(function(data) { \n";
             output += "promise.resolve(this.modelize(data)); \n";
           output += "}, this);"
 
-          output += "this.socket.on('dp_response_" + property + "', cb);"
+          output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments }, cb);\n";
 
           output += "return promise;\n";
           output += "} \n";
