@@ -6,7 +6,8 @@ requirejs.config({
       "app" : "/javascripts",
       "jquery": "lib/jquery-1.8.2.min",
       "dustjs-linkedin": "lib/dust-full-1.1.1",
-      "async":"lib/async"
+      "async":"lib/async",
+      "underscore": "lib/underscore"
     },
     shim: {
         'jquery': {
@@ -20,6 +21,7 @@ requirejs.config({
     }
 });
 
-requirejs(['router'], function(router) {
+requirejs(['router','templates'], function(router, registerTemplates) {
+    registerTemplates();
     router.start(window.app);
 });

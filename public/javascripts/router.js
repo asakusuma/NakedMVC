@@ -17,7 +17,6 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 		}
 
 		this.loadRoute(this.app.route, true);
-
 		this.$('a.push-link').click(_.bind(this.pushLinkClicked, this));	
 	}
 

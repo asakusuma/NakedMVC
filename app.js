@@ -116,7 +116,7 @@ function(components, routes, schema, application, dataproxy) {
         args.push(data.arguments[index]);
       }
       dataproxy[data.name].apply(dataproxy, args).then(function(results) {
-        socket.emit('dp_response_'+data.name, results);
+        socket.emit('dp_response_'+data.name, JSON.stringify(results));
       });
     });
   });

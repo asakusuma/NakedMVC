@@ -35,7 +35,7 @@ function compile_dust(path, curr, prev) {
             if(compiledCount === fileCount) {
               var filepath = output_path + "templates.js";
               var backendfilepath = backend_output_path + "templates.js";
-              fs.writeFile(filepath, compiled, function(err) {
+              fs.writeFile(filepath, 'if ( typeof define === "function") { define(function () { return (function() { ' + compiled + ' }); } ); }', function(err) {
                 if (err) throw err;
                 console.log('Saved ' + filepath);
               });

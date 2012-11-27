@@ -32,29 +32,41 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
 
 
       var host = 'http://localhost:3000',
-      output = "define(['base/promise'], function(Promise) { \n";
-      output += "function DataProxy(io) { ";
-      output += "this.socket = io.connect('" + host + "');";
+      output = "define(['base/promise', 'models/model'], function(Promise, Model) { \n";
+      output += "function DataProxy(io) { \n";
+      output += "this.socket = io.connect('" + host + "');\n";
       output += "} \n";
+
+      output += "DataProxy.prototype.modelize = function(data) { \n";
+      output += "if(_.isArray(data)) { \n";
+      output += "var models = [];\n";
+        output += "for(var i = 0; i < data.length; i++) { models.push(this.modelize(data[i])); }\n";
+      output += "} else if(_.isObject(data) && data.attributes) {\n";
+        output += "for(var key in data.attributes) {\n";
+          output += "data.attributes[key] = this.modelize(data.attributes[key]);"
+        output += "} \n";
+        output += "return new Model(data.attributes);\n";
+      output += "} else { return data; } \n";
+      output += "}\n";
 
       for(var property in dataproxy) {
         var func = dataproxy[property];
         if(property[0] !== '_' && _.isFunction(func)) {
-          output += "DataProxy.prototype." + property + " = function() { ";
-          output += "var promise = new Promise();";
+          output += "DataProxy.prototype." + property + " = function() { \n";
+          output += "var promise = new Promise();\n";
 
-          output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments });";
+          output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments });\n";
 
-          output += "this.socket.on('dp_response_" + property + "', function(data) { ";
-            output += "console.log(data); ";
-          output += "});"
-          output += "return promise;";
+          output += "this.socket.on('dp_response_" + property + "', _.bind(function(data) { \n";
+            output += "promise.resolve(this.modelize(JSON.parse(data))); \n";
+          output += "}, this));"
+          output += "return promise;\n";
           output += "} \n";
         }
       }
     
     output += "return new DataProxy(io); \n";
-    output += "});";
+    output += "});\n";
     
     fs.writeFile(output_path, output, function(err) {
       if (err) throw err;

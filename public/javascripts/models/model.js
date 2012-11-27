@@ -1,4 +1,4 @@
-define(['base/eventable', 'underscore'], function(Eventable,_){
+define(['base/eventable', 'lib/underscore'], function(Eventable,_){
 
   	function Model(data, entityKey) {
   		this.attributes = data;
