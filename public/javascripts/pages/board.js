@@ -1,6 +1,6 @@
 define(['controllers/board'],function (Controller) {
 	return {
-		title: 'Drought Framework',
+		title: 'Board',
 		controllerClass: Controller
 	};
 });

@@ -1,6 +1,6 @@
 define(['controllers/index'],function (Controller) {
 	return {
-		title: 'Drought Framework',
+		title: 'Decision Boards Home',
 		controllerClass: Controller
 	};
 });

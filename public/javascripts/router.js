@@ -17,7 +17,12 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 		}
 
 		this.loadRoute(this.app.route, true);
-		this.$('a.push-link').click(_.bind(this.pushLinkClicked, this));	
+		this.$('a.push-link').click(_.bind(this.pushLinkClicked, this));
+		window.onpopstate = _.bind(this.onPopState, this);	
+	}
+
+	Router.prototype.onPopState = function() {
+		this.loadRoute(window.location.pathname, false, false);
 	}
 
 	Router.prototype.pushLinkClicked = function(event) {
@@ -25,11 +30,11 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 		this.loadRoute(this.$(event.target).attr('href'));
 	}
 
-	Router.prototype.loadRoute = function(path, isFirstRoute) {
+	Router.prototype.loadRoute = function(path, isFirstRoute, pushState) {
 		var route = path;
 		var routeMatched = false;
 		if(isFirstRoute !== true) isFirstRoute = false;
-
+		if(pushState !== false) pushState = true;
 		if(!this.routes[path]) {
 			//Find generic route path
 			//If the url is /boards/b1, translate to /boards/:id
@@ -54,10 +59,15 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 			}
 		}
 		if(this.routes[path]) {
+			var page = this.components.page[this.routes[path]];
 			if(this.rootController) {
 				//remove or do gargabe collection
+				this.$('#app').html("");
 			}
-			this.rootController = new this.components.page[this.routes[path]].controllerClass();
+			if(pushState) {
+				window.history.pushState({}, page.title, route);
+			}
+			this.rootController = new page.controllerClass();
 			this.rootController.init(this.app.params, _.bind(this.viewRendered, this), this.$('#app'), !isFirstRoute);
 		}
 	}
