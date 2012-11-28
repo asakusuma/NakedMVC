@@ -35,8 +35,6 @@ define([
 			}
 		},
 		dataUpdated: function() {
-			console.log("MY DATA");
-			console.log(this.data);
 			this.updateCards();
 		},
 		setDataError: function(query) {
@@ -56,9 +54,9 @@ define([
   				if(row === 3) col++;
   			}
   			if(layout) {
-  				console.log(layout);
   				for(var i = 0; i < cards.length; i++) {
   					if(layout[cards[i].get('_id')]) {
+  						console.log(cards[i].get('_id')+ " = " + layout[cards[i].get('_id')].col + ", " + layout[cards[i].get('_id')].row);
   						cards[i].set('row',layout[cards[i].get('_id')].row);
   						cards[i].set('col',layout[cards[i].get('_id')].col);
   					}
@@ -85,7 +83,6 @@ define([
 				var el = $(out),
 					row = el.attr('data-row'),
 					col = el.attr('data-col');
-				console.log(row,col);
 				this.gridster.add_widget(out,1,1,col,row);
 			}, this));
 		},
