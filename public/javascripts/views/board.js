@@ -27,18 +27,60 @@ define([
 		},
 		setData: function(query, data) {
 			this.data = data;
+			this.data.on('change', _.bind(this.dataUpdated,this));
 			if(this.rendered && typeof window !== 'undefined') {
 				this.postRender();
 			} else {
 				dust.render("board", data.attributes, _.bind(this.renderCards,this));
 			}
 		},
+		dataUpdated: function() {
+			this.updateCards();
+		},
 		setDataError: function(query) {
 			this.el.html("<h1>Fatal Data Error</h1>");
 			this.trigger('rendered', this.el.html());
 		},
+		updateCards: function() {
+			this.ul = this.el.find('ul');
+			var cards = this.data.get('cards'),
+				row = 1,
+				col = 1,
+				layout = this.data.get('layout');
+			for(var i = 0; i < cards.length; i++) {
+  				cards[i].set('row',col);
+  				cards[i].set('col',row);
+  				row = (row+1)%3;
+  				if(row === 3) col++;
+  			}
+  			if(layout) {
+  				for(var i = 0; i < cards.length; i++) {
+  					if(layout[cards[i].get('_id')]) {
+  						cards[i].set('row',layout[cards[i].get('_id')].row);
+  						cards[i].set('col',layout[cards[i].get('_id')].col);
+  					}
+  				}
+  			}
+  			for(var i = 0; i < cards.length; i++) {
+  				var cardEl = this.ul.find('[data-card-id="' + cards[i].get('_id') + '"]');
+  				if(cardEl.length > 0) {
+  					this.gridster.remove_widget(cardEl);
+  					this.addCard(cards[i]);
+  				} else {
+  					this.addCard(cards[i]);
+  				}
+  			}
+		},
+		addCard: function(model) {
+			dust.render("board-card", model.attributes, _.bind(function(err, out) {
+				if(err) throw err;
+				this.gridster.add_widget(out);
+			}, this));
+		},
 		renderCards: function(err, out) {
 			if(err) throw err;
+			this.ul = this.el.find('ul');
+			this.ul.empty();
 			var cards = this.data.get('cards'),
 				row = 1,
 				col = 1,
@@ -67,10 +109,10 @@ define([
   				});
   			}, _.bind(function(error, results) {
   				var html = "";
-  				this.ul = this.el.find('ul');
   				for(var i = 0; i < results.length; i++) {
   					html += results[i];
   				}
+  				this.ul = this.el.find('ul');
   				this.ul.append(html);
   				this.render();
   			},this));

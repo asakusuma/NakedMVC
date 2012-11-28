@@ -100,8 +100,12 @@ define('dataproxy', [
         map = {
           Board: 'updateBoard'
         };
-      if(model.attributes.type && map[model.attributes.type]) {
-        promise = this[map[model.attributes.type]](model);
+      if(model) {
+        if(model.attributes.type && map[model.attributes.type]) {
+          promise = this[map[model.attributes.type]](model);
+        } else {
+          promise.reject();
+        }
       } else {
         promise.reject();
       }

@@ -41,7 +41,15 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
       output += "} \n";
 
       output += "DataProxy.prototype.serverModelsChanged = function(data) {  \n";
-        output += "console.log(data); \n";
+        output += "if(data.attributes._id) { \n";
+        output += "if(this.models[data.attributes._id]) { \n";
+        output += "var changedModel = this.modelize(data.attributes); \n";
+        output += "_.extend(this.models[data.attributes._id].attributes, changedModel.attributes); \n";
+        output += "this.models[data.attributes._id].trigger('change'); \n";
+        output += "} else { \n";
+        output += "//new model \n";
+        output += "} \n";
+      output += "} \n";
       output += "} \n";
 
       output += "DataProxy.prototype.modelChanged = function(event, data) { \n";
@@ -62,7 +70,8 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
           output += "model = this.models[data.attributes._id]\n";
           output += " } else { \n";
           output += "model = new Model(data.attributes);\n";
-          output += "model.on('change', _.bind(this.modelChanged, this));"
+          output += "model.on('change', _.bind(this.modelChanged, this));\n";
+          output += "this.models[data.attributes._id] = model;\n";
           output += " }";
         output += "return model;\n";
 
