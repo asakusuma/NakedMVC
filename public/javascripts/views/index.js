@@ -13,12 +13,21 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 			};
 		},
 		setData: function(query, data) {
-			this.data[query] = JSON.stringify(data);
-			data = {boards: data};
-			if(this.rendered && typeof window !== 'undefined') {
-				this.postRender();
-			} else {
-				dust.render('index', data, _.bind(this.render, this));
+			if(_.isArray(data)) {
+				this.data = data;
+				data = {boards: data};
+				if(this.rendered && typeof window !== 'undefined') {
+					this.postRender();
+				} else {
+					dust.render('index', data, _.bind(this.render, this));
+				}
+			} else if(data.attributes) {
+				this.data.push({
+					id: data.attributes._id,
+					key: data.attributes._id,
+					value: data.attributes
+				});
+				dust.render('index', {boards: this.data}, _.bind(this.render, this));
 			}
 		},
 		onNewBoardButtonClicked: function(event) {
@@ -29,6 +38,7 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 		render: function(err, out) {
 			this.rendered = true;
 			if(err) throw err;
+			this.el.empty();
   			this.el.append(out);
 			this.trigger('rendered', this.el.html());
 		},
