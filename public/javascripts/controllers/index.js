@@ -4,7 +4,7 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 	_.extend(IndexController.prototype, {
 		init: function(params, callback, el, renderMarkup) {
 			if(renderMarkup !== false) renderMarkup = true;
-			this.renderCallback = callback;
+			this.renderCallback = _.once(callback);
 			if(el) {
 				this.el = el;
 			} else {
@@ -17,10 +17,14 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			this.dataPromise = DataFactory.request(query);
 
 			this.dataPromise.then(function(data) {
+				console.log(data);
 				this.view.setData(query, data);
 			}, function() {
 
 			}, this);
+
+			//Register View Events
+			this.view.on('boardCreated', _.bind(this.onBoardCreated, this));
 		},
 		onRenderMarkupFinished: function(event, html) {
 			//if on the client
@@ -28,6 +32,13 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 				this.view.postRender();
 			}		
 			this.renderCallback(html);
+		},
+		onBoardCreated: function(event, obj) {
+			if(obj.title) {
+				obj.cards = [];
+				obj.type = 'Board',
+				DataFactory.create(obj);
+			}
 		},
 		remove: function() {
 			this.dataPromise = null;
