@@ -25,7 +25,7 @@ define(['lib/underscore'],function(_){
 
   Promise.prototype.resolve = function() {
     this.status = 1;
-    if(this.resolveArgs === false) {
+    if(this.resolveArgs === false || true) {
       this.resolveArgs = arguments;
     }
     if(this.registered) {

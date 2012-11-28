@@ -2,12 +2,17 @@ define(['base/promise', 'models/model'], function(Promise, Model) {
 function DataProxy(io) { 
 _.bindAll(this);
 this.models = {};
+this.promises = {};
 this.socket = io.connect('http://localhost:3000');
 this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));} 
 DataProxy.prototype.serverModelsChanged = function(data) {  
 if(data.attributes._id) { 
 var model = this.modelize(data);  
-model.trigger('change'); 
+model.trigger('change');
+var promises = this.promises[model.get('type').toLowerCase() + 's'];
+for(var i = 0; i < promises.length; i++) {
+	promises[i].resolve(model);
+}
 } 
 } 
 DataProxy.prototype.modelChanged = function(event, data) { 
@@ -93,7 +98,14 @@ DataProxy.prototype.request = function() {
 var promise = new Promise();
 var cb = _.bind(function(data) { 
 promise.resolve(this.modelize(data)); 
-}, this);this.socket.emit('dp_request', { name: 'request', arguments: arguments }, cb);
+}, this);
+this.socket.emit('dp_request', { name: 'request', arguments: arguments }, cb);
+if(arguments[0].entityKey && !arguments[0].id) {
+	if(!this.promises[arguments[0].entityKey]) {
+		this.promises[arguments[0].entityKey] = [];
+	}
+	this.promises[arguments[0].entityKey].push(promise);
+}
 return promise;
 } 
 return new DataProxy(io); 
