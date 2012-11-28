@@ -80,15 +80,16 @@ function(components, routes, schema, application, dataproxy) {
               params[key] = req.params[key];
             }
             //END Workaround for weird behavior of req.params
-
-            res.render('global', {
-              title: page.title,
-              markup: html,
-              route: req.route.path,
-              url: req.url,
-              params: JSON.stringify(params),
-              routes: JSON.stringify(routeMap)
-            });
+            if(!res._headerSent) {
+              res.render('global', {
+                title: page.title,
+                markup: html,
+                route: req.route.path,
+                url: req.url,
+                params: JSON.stringify(params),
+                routes: JSON.stringify(routeMap)
+              });
+            }   
           });
         };
       })(page));

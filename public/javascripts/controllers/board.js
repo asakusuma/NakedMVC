@@ -4,7 +4,7 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 	_.extend(BoardController.prototype, {
 		init: function(params, callback, el, renderMarkup) {
 			if(renderMarkup !== false) renderMarkup = true;
-			this.renderCallback = callback;
+			this.renderCallback = _.once(callback);
 			if(el) {
 				this.el = el;
 			} else {
