@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node app",
+    "test": "mocha test/specs --recursive",
+    "testData": "node test/scripts/load.test.data.js"
   },
   "dependencies": {
     "express": "3.0.3",
