@@ -24,8 +24,7 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			//if on the client
 			if(typeof window !== 'undefined') {
 				this.view.postRender();
-			}
-			console.log("Rendered Index Controller");			
+			}		
 			this.renderCallback(html);
 		},
 		remove: function() {

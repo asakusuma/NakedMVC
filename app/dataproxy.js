@@ -32,19 +32,62 @@ define('dataproxy', [
 			});
 			this.db = new cradle.Connection().database(dbName);
       this.hash = {};
+      this.queryListeners = {};
+
+      this.changeFeed = this.db.changes({ 
+        include_docs: true,
+        since: 'now'
+      });
+
+      this.changeFeed.on('change', _.bind(this._dataChanged,this));
 		},
 		getNumBoards: function(success, error, context) {
 			var promise = new Promise();
 			promise.resolve(2);
 			return promise;
 		},
-		//query can't call this method
+		//frontend can't call this method
 		_somePrivateMethod: function() {
 
 		},
+    _dataChanged: function(change) {
+      if(change.doc) {
+        if(this.queryListeners[change.id]) {
+          this.request({
+            id: change.id
+          }).then(_.bind(function(results) {
+            this.queryListeners[change.id].trigger('change', results);
+          },this));
+        } else if(this.queryListeners[change.doc.type]) {
+          this.request({
+            entityKey: change.doc.type
+          }).then(_.bind(function(results) {
+            this.queryListeners[change.doc.type].trigger('change', results);
+          },this));
+        }
+      }
+    },
+    _registerQuery: function(command, callback) {
+      if(command.name === 'request') {
+        var query = command.arguments[0],
+          queryKey;
+
+        if(query.id) {
+          queryKey = query.id;
+        } else if(query.entityKey) {
+          queryKey = query.entityKey;
+        }
+
+        if(queryKey) {
+          if(!this.queryListeners[queryKey]) {
+            this.queryListeners[queryKey] = new Eventable();
+          }
+          this.queryListeners[queryKey].on('change',callback);
+        }
+      }
+    },
     _createModel: function(attrs) {
       if(this.hash[attrs['_id']]) {
-        console.log("Cache hit!");
         return this.hash[attrs['_id']];
       } else {
         var n = new Model(attrs);
@@ -52,18 +95,76 @@ define('dataproxy', [
         return n;
       }
     },
+    update: function(model) {
+      var promise = new Promise(),
+        map = {
+          Board: 'updateBoard'
+        };
+      if(model) {
+        if(model.attributes.type && map[model.attributes.type]) {
+          promise = this[map[model.attributes.type]](model);
+        } else {
+          promise.reject();
+        }
+      } else {
+        promise.reject();
+      }
+      return promise;
+    },
+    updateBoard: function(board) {
+      var foreignKeys = this._getForeignKeys(board.attributes);
+
+      //Update foreign
+      for(var i = 0; i < foreignKeys.length; i++) {
+        var children = board.attributes[foreignKeys[i]];
+        for(var c = 0; c < children.length; c++) {
+          this.update(children[c]);
+        }
+      }
+
+      //Delete foreign
+      for(var i = 0; i < foreignKeys.length; i++) {
+        delete board.attributes[foreignKeys[i]];
+      }
+
+      return this._update(board.attributes);
+    },
+    _update: function(obj) {
+      var promise = new Promise();
+      if(obj._id) {
+        _.extend(this.hash[obj._id].attributes, obj);
+        this.db.merge(obj._id, obj, function (err, res) {
+          if(err) promise.reject();
+          promise.resolve();
+        });
+      }
+      return promise;
+    },
     request: function(query) {
       if(query.ids) {
         return this._query(query);
       } else if(query.id) {
         if(this.hash[query.id]) {
-          console.log("Cache Hit!");
           var promise = new Promise();
           promise.resolve(this.hash[query.id]);
           return promise;
         }
       }
       return this._query(query);
+    },
+    _getForeignKeys: function(doc) {
+      var foreignKeys = [];
+      for(var key in doc) {
+        var schemaName = key;
+        if(schemaName[schemaName.length-1] === 's') {
+          schemaName = schemaName.substring(0,schemaName.length - 1);
+        }
+        schemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
+        if(Schema.obj[schemaName]) {
+          foreignKeys.push(key);
+        }
+      }
+      return foreignKeys;
     },
 		_query: function(query) {
 			var promise = new Promise();
@@ -72,19 +173,7 @@ define('dataproxy', [
           if(err) {
             promise.reject(err);
           } else {
-            var foreignKeys = [];
-
-            //Determine if any fields contain foreign IDS
-            for(var key in doc) {
-              var schemaName = key;
-              if(schemaName[schemaName.length-1] === 's') {
-                schemaName = schemaName.substring(0,schemaName.length - 1);
-              }
-              schemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
-              if(Schema.obj[schemaName]) {
-                foreignKeys.push(key);
-              }
-            }
+            var foreignKeys = this._getForeignKeys(doc);
 
             if(foreignKeys.length > 0) {
               //Replace foreign IDS with actual data
@@ -115,7 +204,6 @@ define('dataproxy', [
         }, this));
         return promise;
       } else if(query.ids && query.entityKey) {
-        console.log(query);
         this.async.map(query.ids, _.bind(
           function(id, cb) {
             this.db.view(query.entityKey + '/all', { key: id }, _.bind(function(err, doc) {

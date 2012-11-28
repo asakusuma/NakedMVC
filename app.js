@@ -80,15 +80,16 @@ function(components, routes, schema, application, dataproxy) {
               params[key] = req.params[key];
             }
             //END Workaround for weird behavior of req.params
-
-            res.render('global', {
-              title: page.title,
-              markup: html,
-              route: req.route.path,
-              url: req.url,
-              params: JSON.stringify(params),
-              routes: JSON.stringify(routeMap)
-            });
+            if(!res._headerSent) {
+              res.render('global', {
+                title: page.title,
+                markup: html,
+                route: req.route.path,
+                url: req.url,
+                params: JSON.stringify(params),
+                routes: JSON.stringify(routeMap)
+              });
+            }   
           });
         };
       })(page));
@@ -109,14 +110,18 @@ function(components, routes, schema, application, dataproxy) {
   });
 
   application.io.sockets.on('connection', function (socket) {
-    //socket.emit('news', { hello: 'world' });
-    socket.on('dp_request', function (data) {
+    socket.on('dp_request', function (data, callback) {
       var args = [];
       for(var index in data.arguments) {
         args.push(data.arguments[index]);
       }
+
+      dataproxy._registerQuery(data, _.bind(function(event, models) {
+        socket.emit('models_changed', models);
+      },this));
+
       dataproxy[data.name].apply(dataproxy, args).then(function(results) {
-        socket.emit('dp_response_'+data.name, results);
+        callback(results);
       });
     });
   });

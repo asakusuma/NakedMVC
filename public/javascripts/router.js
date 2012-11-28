@@ -65,7 +65,6 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 				delete this.rootController;
 			}
 			if(pushState) {
-				console.log(route);
 				window.history.pushState({}, page.title, route);
 			}
 			this.rootController = new page.controllerClass();
