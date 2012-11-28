@@ -104,7 +104,7 @@ define('dataproxy', [
           if(err) {
             promise.reject();
           } else {
-            promsie.resolve();
+            promise.resolve();
           }
         });
       }
