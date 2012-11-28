@@ -96,7 +96,9 @@ define([
 				col = 1,
 				layout = this.data.get('layout');
   			this.el.append(out);
-
+  			if(!cards) {
+  				return;
+  			}
   			for(var i = 0; i < cards.length; i++) {
   				cards[i].set('row',col);
   				cards[i].set('col',row);
