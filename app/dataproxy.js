@@ -56,6 +56,8 @@ define('dataproxy', [
           this.request({
             id: change.id
           }).then(_.bind(function(results) {
+            console.log('U[dated from db');
+            console.log(results);
             this.queryListeners[change.id].trigger('change', results);
           },this));
         } else if(this.queryListeners[change.doc.type]) {
@@ -137,22 +139,32 @@ define('dataproxy', [
       //Update foreign
       for(var i = 0; i < foreignKeys.length; i++) {
         var children = board.attributes[foreignKeys[i]];
+        board.attributes[foreignKeys[i]] = [];
         for(var c = 0; c < children.length; c++) {
-          this.update(children[c]);
+          if(children[c].attributes) {
+            board.attributes[foreignKeys[i]].push(children[c].attributes._id);
+          } else {
+            board.attributes[foreignKeys[i]].push(children[c]);
+          }
+          
         }
+        
       }
 
+      /*
       //Delete foreign
       for(var i = 0; i < foreignKeys.length; i++) {
         delete board.attributes[foreignKeys[i]];
       }
-
+      */
+      //Checked
       return this._update(board.attributes);
     },
     _update: function(obj) {
       var promise = new Promise();
       if(obj._id) {
-        _.extend(this.hash[obj._id].attributes, obj);
+        this.hash[obj._id] = null;
+        delete this.hash[obj._id];
         this.db.merge(obj._id, obj, function (err, res) {
           if(err) promise.reject();
           promise.resolve();

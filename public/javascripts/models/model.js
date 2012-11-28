@@ -9,7 +9,7 @@ define(['base/eventable', 'lib/underscore'], function(Eventable,_){
       return this.attributes[key];
   	}
 
-  	Model.prototype.set = function(key, value) {
+  	Model.prototype.set = function(key, value, silent) {
   		this.attributes[key] = value;
       this.trigger('change', this);
       return this;

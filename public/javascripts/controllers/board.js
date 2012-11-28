@@ -17,6 +17,7 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			}
 			this.dataPromises = [];
 			this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
+			this.view.on('cardAdded', _.bind(this.onCardAdded,this));
 			if(params.id) {
 				
 				for(var i = 0; i < queries.length; i++) {
@@ -29,7 +30,9 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 					var promise = DataFactory.request(query);
 					this.dataPromises.push(promise);
 					promise.then(function(data) {
-						console.log("MY DATA: " + JSON.stringify(data));
+						if(data.attributes) {
+							this.board = data;
+						}
 						this.view.setData(query, data);
 					}, function() {
 
@@ -38,6 +41,11 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 
 			}
 
+		},
+		onCardAdded: function(event, id) {
+			var cards = this.board.get('cards');
+			cards.push(id);
+			this.board.set('cards',cards, true);
 		},
 		onRenderMarkupFinished: function(event, html) {
 			//if on the client

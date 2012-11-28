@@ -9,9 +9,10 @@ DataProxy.prototype.serverModelsChanged = function(data) {
 if(data.attributes._id) { 
 var model = this.modelize(data);  
 model.trigger('change'); 
-var promises = this.promises[model.get('type').toLowerCase() + 's']; 
+var key = model.get('type').toLowerCase() + 's';if(this.promises[key]) {var promises = this.promises[key]; 
 for(var i = 0; i < promises.length; i++) { 
 promises[i].update(model); 
+} 
 } 
 } 
 } 

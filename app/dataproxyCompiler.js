@@ -45,10 +45,15 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
         output += "if(data.attributes._id) { \n";
           output += "var model = this.modelize(data);  \n";
           output += "model.trigger('change'); \n";
-          output += "var promises = this.promises[model.get('type').toLowerCase() + 's']; \n";
-          output += "for(var i = 0; i < promises.length; i++) { \n";
-          output += "promises[i].update(model); \n";
+          output += "var key = model.get('type').toLowerCase() + 's';";
+          
+          output += "if(this.promises[key]) {";
+            output += "var promises = this.promises[key]; \n";
+            output += "for(var i = 0; i < promises.length; i++) { \n";
+            output += "promises[i].update(model); \n";
+            output += "} \n";
           output += "} \n";
+
         output += "} \n";
       output += "} \n";
 
