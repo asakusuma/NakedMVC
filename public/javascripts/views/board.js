@@ -352,6 +352,7 @@ define([
 						}
 						if(id) {
 							this.trigger('cardAdded', id);
+							$('#add-card-input').val("");
 						}
 					}
 					
@@ -378,7 +379,9 @@ define([
 				col = 1,
 				layout = this.data.get('layout'),
 				redraw = false;
-			if(this.ul.find('li').length !== cards.length) redraw = true;
+
+			console.log(this.ul.find('li[data-card-id]').length + ' - ' +cards.length);
+			if(this.ul.find('li[data-card-id]').length !== cards.length) redraw = true;
 			for(var i = 0; i < cards.length; i++) {
   				if(cards[i].attributes) {
   					cards[i].set('row',row);
@@ -388,9 +391,13 @@ define([
 	  				if(row === 3) col++;
   				}
   			}
+
+  			//layout && layout.length === cards.length
+
   			if(layout && layout.length === cards.length) {
   				for(var i = 0; i < cards.length; i++) {
   					if(layout[cards[i]] && layout[cards[i]].attributes) {
+  						alert('layout');
   						var id = cards[i].get('_id'),
   							cardEl = this.ul.find('[data-card-id="'+id+'"]');
   						if(cardEl.attr('data-row') != layout[id].row || cardEl.attr('data-col') != layout[id].col) {
@@ -404,11 +411,11 @@ define([
   			if(redraw) {
   				if(this.gridster.serialize().length !== 0) {
   					this.gridster.remove_all_widgets((function(cards,view) {
-						return function() {
+						return _.once(function() {
 							for(var i = 0; i < cards.length; i++) {
 		  						view.addCard(cards[i]);
 		  					}
-						};
+						});
 					})(cards,this));
   				} else {
   					for(var i = 0; i < cards.length; i++) {
