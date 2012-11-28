@@ -35,7 +35,7 @@ define([
 			}
 		},
 		dataUpdated: function() {
-			this.updateCards();
+			if(this.el) this.updateCards();
 		},
 		setDataError: function(query) {
 			this.el.html("<h1>Fatal Data Error</h1>");

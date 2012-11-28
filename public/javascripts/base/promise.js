@@ -42,6 +42,10 @@ define(['lib/underscore'],function(_){
       this.failure.apply(this.context,arguments);
     }
   }
+
+  Promise.prototype.kill = function() {
+    this.registered = false;
+  }
   
   return Promise;
 });

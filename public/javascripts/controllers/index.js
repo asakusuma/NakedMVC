@@ -14,7 +14,9 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			var query = this.view.build(this.el, !renderMarkup);
 
 			this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-			DataFactory.request(query).then(function(data) {
+			this.dataPromise = DataFactory.request(query);
+
+			this.dataPromise.then(function(data) {
 				this.view.setData(query, data);
 			}, function() {
 
@@ -28,6 +30,7 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			this.renderCallback(html);
 		},
 		remove: function() {
+			this.dataPromise = null;
 			this.off();
 			this.el.empty();
 			this.el = null;
