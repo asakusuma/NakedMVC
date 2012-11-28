@@ -108,7 +108,7 @@ define('dataproxy', [
             promise.reject();
           } else {
             promise.resolve();
-            this.queryListeners[this._typeToEntityKey(obj.type)].trigger('change');
+            this.queryListeners[this._typeToEntityKey(obj.type)].trigger('change', obj);
           }
         }, this));
       }
