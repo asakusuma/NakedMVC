@@ -46,7 +46,8 @@ define([
 			var cards = this.data.get('cards'),
 				row = 1,
 				col = 1,
-				layout = this.data.get('layout');
+				layout = this.data.get('layout'),
+				redraw = false;
 			for(var i = 0; i < cards.length; i++) {
   				cards[i].set('row',row);
   				cards[i].set('col',col);
@@ -56,22 +57,26 @@ define([
   			if(layout) {
   				for(var i = 0; i < cards.length; i++) {
   					if(layout[cards[i].get('_id')]) {
-  						console.log(cards[i].get('_id')+ " = " + layout[cards[i].get('_id')].col + ", " + layout[cards[i].get('_id')].row);
-  						cards[i].set('row',layout[cards[i].get('_id')].row);
-  						cards[i].set('col',layout[cards[i].get('_id')].col);
+  						var id = cards[i].get('_id'),
+  							cardEl = this.ul.find('[data-card-id="'+id+'"]');
+  						if(cardEl.attr('data-row') != layout[id].row || cardEl.attr('data-col') != layout[id].col) {
+  							redraw = true;
+  						}
+  						cards[i].set('row',layout[id].row);
+  						cards[i].set('col',layout[id].col);
   					}
   				}
   			}
 
-  			this.gridster.remove_all_widgets((function(cards,view) {
-				return _.once(function() {
-					for(var i = 0; i < cards.length; i++) {
-  						view.addCard(cards[i]);
-  					}
-				});
-			})(cards,this));
-
-  			
+  			if(redraw) {
+  				this.gridster.remove_all_widgets((function(cards,view) {
+					return _.once(function() {
+						for(var i = 0; i < cards.length; i++) {
+	  						view.addCard(cards[i]);
+	  					}
+					});
+				})(cards,this));
+  			}
 		},
 		addCard: function(model) {
 			dust.render("board-card", model.attributes, _.bind(function(err, out) {
