@@ -43,7 +43,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
       output += "DataProxy.prototype.serverModelsChanged = function(data) {  \n";
         output += "if(data.attributes._id) { \n";
         output += "if(this.models[data.attributes._id]) { \n";
-        output += "var changedModel = this.modelize(data.attributes); \n";
+        output += "var changedModel = this.modelize(data); \n";
         output += "_.extend(this.models[data.attributes._id].attributes, changedModel.attributes); \n";
         output += "this.models[data.attributes._id].trigger('change'); \n";
         output += "} else { \n";

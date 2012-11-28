@@ -35,6 +35,8 @@ define([
 			}
 		},
 		dataUpdated: function() {
+			console.log("MY DATA");
+			console.log(this.data);
 			this.updateCards();
 		},
 		setDataError: function(query) {
@@ -48,12 +50,13 @@ define([
 				col = 1,
 				layout = this.data.get('layout');
 			for(var i = 0; i < cards.length; i++) {
-  				cards[i].set('row',col);
-  				cards[i].set('col',row);
+  				cards[i].set('row',row);
+  				cards[i].set('col',col);
   				row = (row+1)%3;
   				if(row === 3) col++;
   			}
   			if(layout) {
+  				console.log(layout);
   				for(var i = 0; i < cards.length; i++) {
   					if(layout[cards[i].get('_id')]) {
   						cards[i].set('row',layout[cards[i].get('_id')].row);
@@ -64,8 +67,13 @@ define([
   			for(var i = 0; i < cards.length; i++) {
   				var cardEl = this.ul.find('[data-card-id="' + cards[i].get('_id') + '"]');
   				if(cardEl.length > 0) {
-  					this.gridster.remove_widget(cardEl);
-  					this.addCard(cards[i]);
+  					
+  					this.gridster.remove_widget(cardEl, (function(card,view) {
+  						return function() {
+  							view.addCard(card);
+  						}
+  					})(cards[i],this));
+  					
   				} else {
   					this.addCard(cards[i]);
   				}
@@ -74,7 +82,11 @@ define([
 		addCard: function(model) {
 			dust.render("board-card", model.attributes, _.bind(function(err, out) {
 				if(err) throw err;
-				this.gridster.add_widget(out);
+				var el = $(out),
+					row = el.attr('data-row'),
+					col = el.attr('data-col');
+				console.log(row,col);
+				this.gridster.add_widget(out,1,1,col,row);
 			}, this));
 		},
 		renderCards: function(err, out) {

@@ -5,7 +5,6 @@ this.models = {};
 this.socket = io.connect('http://localhost:3000');
 this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));} 
 DataProxy.prototype.serverModelsChanged = function(data) {  
-	console.log(data);
 if(data.attributes._id) { 
 if(this.models[data.attributes._id]) { 
 var changedModel = this.modelize(data.attributes); 
