@@ -7,7 +7,8 @@ requirejs.config({
       "jquery": "lib/jquery-1.8.2.min",
       "dustjs-linkedin": "lib/dust-full-1.1.1",
       "async":"lib/async",
-      "underscore": "lib/underscore"
+      "underscore": "lib/underscore",
+      "bootstrap": "lib/boostrap.min"
     },
     shim: {
         'jquery': {

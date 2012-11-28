@@ -39,6 +39,8 @@ define([
 				} else {
 					dust.render("board", data.attributes, _.bind(this.renderCards,this));
 				}
+			} else if(data && _.isArray(data)) {
+				
 			}
 		},
 		dataUpdated: function() {
