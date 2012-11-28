@@ -68,6 +68,13 @@ promise.resolve(this.modelize(data));
 }, this);this.socket.emit('dp_request', { name: 'getNumBoards', arguments: arguments }, cb);
 return promise;
 } 
+DataProxy.prototype.create = function() { 
+var promise = new Promise();
+var cb = _.bind(function(data) { 
+promise.resolve(this.modelize(data)); 
+}, this);this.socket.emit('dp_request', { name: 'create', arguments: arguments }, cb);
+return promise;
+} 
 DataProxy.prototype.update = function() { 
 var promise = new Promise();
 var cb = _.bind(function(data) { 

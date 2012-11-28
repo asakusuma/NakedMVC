@@ -95,6 +95,21 @@ define('dataproxy', [
         return n;
       }
     },
+    create: function(obj) {
+      var promise = new Promise(),
+        id;
+      if(title) {
+        id = obj.title.toLowerCase.replace(' ','-');
+        db.save(id, obj, function (err, res) {
+          if(err) {
+            promise.reject();
+          } else {
+            promsie.resolve();
+          }
+        });
+      }
+      return promise;
+    },
     update: function(model) {
       var promise = new Promise(),
         map = {
