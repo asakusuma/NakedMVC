@@ -1,6 +1,7 @@
 <li data-row="{row}" data-col="{col}" data-sizex="1" data-sizey="1" data-card-id="{_id}">
 	<div class="card">
 		<h3>{title}</h3>
+		<div class="photo" style="background-image: url('{image}');"></div>
 		<h4>{subtitle}</h4>
 	</div>
 </li>

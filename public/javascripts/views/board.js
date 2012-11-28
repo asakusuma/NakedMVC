@@ -136,7 +136,7 @@ define([
 			$(_.bind(function(){
 				this.gridster = ul.gridster({
 	    			widget_margins: [10, 10],
-	    			widget_base_dimensions: [240,240],
+	    			widget_base_dimensions: [360,360],
 	    			draggable: {
 		                stop: _.bind(this.cardDragged,this)
 		            }
