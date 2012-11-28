@@ -99,7 +99,7 @@ define('dataproxy', [
       var promise = new Promise(),
         id;
       if(obj.title) {
-        id = obj.title.toLowerCase.replace(' ','-');
+        id = obj.title.toLowerCase().replace(' ','-');
         this.db.save(id, obj, function (err, res) {
           if(err) {
             promise.reject();
