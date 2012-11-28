@@ -47,7 +47,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
           output += "model.trigger('change'); \n";
           output += "var promises = this.promises[model.get('type').toLowerCase() + 's']; \n";
           output += "for(var i = 0; i < promises.length; i++) { \n";
-          output += "promises[i].resolve(model); \n";
+          output += "promises[i].update(model); \n";
           output += "} \n";
         output += "} \n";
       output += "} \n";
@@ -90,12 +90,15 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
           output += "}, this);"
 
           output += "this.socket.emit('dp_request', { name: '" + property + "', arguments: arguments }, cb);\n";
-          output += "if(arguments[0].entityKey && !arguments[0].id) {\n";
-          output += "if(!this.promises[arguments[0].entityKey]) {\n";
-            output += "this.promises[arguments[0].entityKey] = [];\n";
-          output += "}\n";
-          output += "this.promises[arguments[0].entityKey].push(promise);\n";
-          output += "}\n";
+
+          if(property === 'request') {
+            output += "if(arguments[0].entityKey && !arguments[0].id) {\n";
+            output += "if(!this.promises[arguments[0].entityKey]) {\n";
+              output += "this.promises[arguments[0].entityKey] = [];\n";
+            output += "}\n";
+            output += "this.promises[arguments[0].entityKey].push(promise);\n";
+            output += "}\n";
+          }
 
           output += "return promise;\n";
           output += "} \n";
@@ -104,12 +107,12 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     
     output += "return new DataProxy(io); \n";
     output += "});\n";
-    /*
+    
     fs.writeFile(output_path, output, function(err) {
       if (err) throw err;
       console.log('Saved ' + output_path);
     });
-    */
+    
   }
 
   watch.createMonitor(input_path, function (monitor) {

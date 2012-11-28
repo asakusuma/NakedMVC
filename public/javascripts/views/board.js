@@ -26,12 +26,14 @@ define([
 			};
 		},
 		setData: function(query, data) {
-			this.data = data;
-			this.data.on('change', _.bind(this.dataUpdated,this));
-			if(this.rendered && typeof window !== 'undefined') {
-				this.postRender();
-			} else {
-				dust.render("board", data.attributes, _.bind(this.renderCards,this));
+			if(data && data.attributes) {
+				this.data = data;
+				this.data.on('change', _.bind(this.dataUpdated,this));
+				if(this.rendered && typeof window !== 'undefined') {
+					this.postRender();
+				} else {
+					dust.render("board", data.attributes, _.bind(this.renderCards,this));
+				}
 			}
 		},
 		dataUpdated: function() {
@@ -97,39 +99,42 @@ define([
 				layout = this.data.get('layout');
   			this.el.append(out);
   			if(!cards) {
-  				return;
-  			}
-  			for(var i = 0; i < cards.length; i++) {
-  				cards[i].set('row',col);
-  				cards[i].set('col',row);
-  				row = (row+1)%3;
-  				if(row === 3) col++;
-  			}
-  			if(layout) {
-  				for(var i = 0; i < cards.length; i++) {
-  					if(layout[cards[i].get('_id')]) {
-  						cards[i].set('row',layout[cards[i].get('_id')].row);
-  						cards[i].set('col',layout[cards[i].get('_id')].col);
-  					}
-  				}
-  			}
-  			
-  			async.map(cards, function(item, callback) {
-  				dust.render("board-card", item.attributes, function(err, out) {
-  					if(err) throw err;
-  					callback(null, out);
-  				});
-  			}, _.bind(function(error, results) {
-  				var html = "";
-  				for(var i = 0; i < results.length; i++) {
-  					html += results[i];
-  				}
-  				this.ul = this.el.find('ul');
-  				this.ul.append(html);
+  				console.log("DONT RENDER");
   				this.render();
-  			},this));
+  			} else {
+  				for(var i = 0; i < cards.length; i++) {
+	  				cards[i].set('row',col);
+	  				cards[i].set('col',row);
+	  				row = (row+1)%3;
+	  				if(row === 3) col++;
+	  			}
+	  			if(layout) {
+	  				for(var i = 0; i < cards.length; i++) {
+	  					if(layout[cards[i].get('_id')]) {
+	  						cards[i].set('row',layout[cards[i].get('_id')].row);
+	  						cards[i].set('col',layout[cards[i].get('_id')].col);
+	  					}
+	  				}
+	  			}
+	  			console.log("ASYNC");
+	  			async.map(cards, function(item, callback) {
+	  				dust.render("board-card", item.attributes, function(err, out) {
+	  					if(err) throw err;
+	  					callback(null, out);
+	  				});
+	  			}, _.bind(function(error, results) {
+	  				var html = "";
+	  				for(var i = 0; i < results.length; i++) {
+	  					html += results[i];
+	  				}
+	  				this.ul = this.el.find('ul');
+	  				this.ul.append(html);
+	  				this.render();
+	  			},this));
+  			}
 		},
 		render: function() {
+			console.log("RENDER!!!!!");
 			this.rendered = true;
 			this.trigger('rendered', this.el.html());
 		},

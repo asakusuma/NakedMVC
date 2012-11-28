@@ -19,17 +19,23 @@ define(['lib/underscore'],function(_){
     if(failureCallback) this.failure = failureCallback;
     this.registered = true;
     if(con) { this.context = con; }
-    if(this.status === 1) { this.resolve(); }
+    if(this.status === 1) { this.resolve(this.resolveArgs); }
     if(this.status === 2) { this.reject(); }
   }
 
   Promise.prototype.resolve = function() {
     this.status = 1;
-    if(this.resolveArgs === false || true) {
+    if(this.resolveArgs === false) {
       this.resolveArgs = arguments;
     }
     if(this.registered) {
       this.success.apply(this.context,this.resolveArgs);
+    }
+  }
+
+  Promise.prototype.update = function() {
+    if(this.registered) {
+      this.success.apply(this.context,arguments);
     }
   }
 

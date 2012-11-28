@@ -38,9 +38,11 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 		render: function(err, out) {
 			this.rendered = true;
 			if(err) throw err;
-			this.el.empty();
-  			this.el.append(out);
-			this.trigger('rendered', this.el.html());
+			if(this.el) {
+				this.el.empty();
+  				this.el.append(out);
+				this.trigger('rendered', this.el.html());
+			}
 		},
 		postRender: function() {
 			$('#new-board-button').click(_.bind(this.onNewBoardButtonClicked, this));

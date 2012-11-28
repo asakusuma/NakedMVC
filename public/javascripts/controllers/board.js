@@ -20,6 +20,7 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 				//forward request to datafactory
 				this.dataPromise = DataFactory.request(query);
 				this.dataPromise.then(function(data) {
+					console.log("MY DATA: " + JSON.stringify(data));
 					this.view.setData(query, data);
 				}, function() {
 
