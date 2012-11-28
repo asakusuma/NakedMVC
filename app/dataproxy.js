@@ -15,22 +15,22 @@ define('dataproxy', [
     Model,
     _
   ) {
-	var DataProxy = new Eventable();
-	DataProxy = _.extend(DataProxy, {
-		init: function(cradle, async) {
+  var DataProxy = new Eventable();
+  DataProxy = _.extend(DataProxy, {
+    init: function(cradle, async) {
       this.async = async;
-			var dbName = 'app',
-			    host,
-			    port;
+      var dbName = 'app',
+          host,
+          port;
 
-			// Cradle setup
-			cradle.setup({
-			  cache: true,
-			  raw: false,
-			  host: host || '127.0.0.1',
-			  port: port || 5984
-			});
-			this.db = new cradle.Connection().database(dbName);
+      // Cradle setup
+      cradle.setup({
+        cache: true,
+        raw: false,
+        host: host || '127.0.0.1',
+        port: port || 5984
+      });
+      this.db = new cradle.Connection().database(dbName);
       this.hash = {};
       this.queryListeners = {};
 
@@ -40,16 +40,16 @@ define('dataproxy', [
       });
 
       this.changeFeed.on('change', _.bind(this._dataChanged,this));
-		},
-		getNumBoards: function(success, error, context) {
-			var promise = new Promise();
-			promise.resolve(2);
-			return promise;
-		},
-		//frontend can't call this method
-		_somePrivateMethod: function() {
+    },
+    getNumBoards: function(success, error, context) {
+      var promise = new Promise();
+      promise.resolve(2);
+      return promise;
+    },
+    //frontend can't call this method
+    _somePrivateMethod: function() {
 
-		},
+    },
     _dataChanged: function(change) {
       if(change.doc) {
         if(this.queryListeners[change.id]) {
@@ -95,18 +95,22 @@ define('dataproxy', [
         return n;
       }
     },
+    _typeToEntityKey: function(typeString) {
+      return typeString.toLowerCase()+'s';
+    },
     create: function(obj) {
       var promise = new Promise(),
         id;
-      if(obj.title) {
+      if(obj.title && obj.type) {
         id = obj.title.toLowerCase().replace(' ','-');
-        this.db.save(id, obj, function (err, res) {
+        this.db.save(id, obj, _.bind(function (err, res) {
           if(err) {
             promise.reject();
           } else {
             promise.resolve();
+            this.queryListeners[this._typeToEntityKey(obj.type)].trigger('change');
           }
-        });
+        }, this));
       }
       return promise;
     },
@@ -181,10 +185,10 @@ define('dataproxy', [
       }
       return foreignKeys;
     },
-		_query: function(query) {
-			var promise = new Promise();
-			if(query.id) {
-				this.db.get(query.id, _.bind(function(err, doc) {
+    _query: function(query) {
+      var promise = new Promise();
+      if(query.id) {
+        this.db.get(query.id, _.bind(function(err, doc) {
           if(err) {
             promise.reject(err);
           } else {
@@ -234,96 +238,20 @@ define('dataproxy', [
             promise.resolve(results);
         });
         return promise; 
-			} else if(query.entityKey) {
-				this.db.view(query.entityKey+'/all', {}, function(err, doc) {
-					promise.resolve(doc);
-				});
-				return promise;
-			} else {
-				if(query.predefined && this[query.predefined] && query.predefined[0] !== '_') {
-					return this[query.predefined]();
-				}
-			}
-			promise.reject('Unknown query');
-			return promise;
-		}
-	});
-	DataProxy.init(Cradle, Async);
-	return DataProxy;
-});
-
-
-/*
-exports.listBoards = function(req, res) {
-  db.view('boards/all', {}, function(err, doc) {
-    res.send(doc.map(function(item) {
-      return item;
-    }));
-  });
-}
-
-exports.listCards = function(req, res) {
-  db.view('cards/all', {}, function(err, doc) {
-    res.send(doc.map(function(item) {
-      return item;
-    }));
-  });
-}
-
-exports.board = function(req, res){
-  var id = req.params.id, value;
-  db.view('boards/all', { key: id }, function(err, doc) {
-    if(err) {
-      res.statusCode = 404;
-      res.send(err);
-    } else {
-      value = doc[0].value;
-      async.map(value.cards, function(cardId, cb) {
-        db.view('cards/all', { key: cardId }, function(err, doc) {
-          cb(err, doc[0].value);
+      } else if(query.entityKey) {
+        this.db.view(query.entityKey+'/all', {}, function(err, doc) {
+          promise.resolve(doc);
         });
-      }, function(err, results) {
-        value.cards = results;
-        res.send(value);
-      });
+        return promise;
+      } else {
+        if(query.predefined && this[query.predefined] && query.predefined[0] !== '_') {
+          return this[query.predefined]();
+        }
+      }
+      promise.reject('Unknown query');
+      return promise;
     }
   });
-};
-
-exports.card = function(req, res){
-  var id = req.params.id;
-  db.view('cards/all', { key: id }, function(err, doc) {
-    if(err) {
-      res.statusCode = 404;
-      res.send(err);
-    } else {
-      res.send(doc);
-    }
-  });
-};
-
-exports.fieldOfStudy = function(req, res){
-  var id = req.params.id;
-  db.get(id, function(err, doc) {
-    if(err) {
-      res.statusCode = 404;
-      res.send(err);
-    } else {
-      res.send(doc);
-    }
-  });
-};
-
-exports.school = function(req, res){
-  var id = req.params.id;
-  db.get(id, function(err, doc) {
-    if(err) {
-      res.statusCode = 404;
-      res.send(err);
-    } else {
-      res.send(doc);
-    }
-  });
-};
-
-*/
+  DataProxy.init(Cradle, Async);
+  return DataProxy;
+});
