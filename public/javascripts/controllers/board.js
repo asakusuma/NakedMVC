@@ -11,20 +11,31 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 				this.el = $('<div></div>');
 			}
 			this.view = new View();
-			var query = this.view.build(this.el, !renderMarkup);
-
+			var queries = this.view.build(this.el, !renderMarkup);
+			if(!_.isArray(queries)) {
+				queries = [queries];
+			}
+			this.dataPromises = [];
 			this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
 			if(params.id) {
-				query.id = params.id;
-				//Take request from view, inject context, and
-				//forward request to datafactory
-				this.dataPromise = DataFactory.request(query);
-				this.dataPromise.then(function(data) {
-					console.log("MY DATA: " + JSON.stringify(data));
-					this.view.setData(query, data);
-				}, function() {
+				
+				for(var i = 0; i < queries.length; i++) {
+					var query = queries[i];
+					if(query.entityKey && query.entityKey === 'boards') {
+						query.id = params.id;
+					}
+					//Take request from view, inject context, and
+					//forward request to datafactory
+					var promise = DataFactory.request(query);
+					this.dataPromises.push(promise);
+					promise.then(function(data) {
+						console.log("MY DATA: " + JSON.stringify(data));
+						this.view.setData(query, data);
+					}, function() {
 
-				}, this);
+					}, this);
+				}
+
 			}
 
 		},
@@ -36,7 +47,9 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			this.renderCallback(html);
 		},
 		remove: function() {
-			this.dataPromise.kill();
+			for(var  i = 0; i < this.dataPromises.length; i++) {
+				this.dataPromises[i].kill();
+			}
 			this.off();
 			this.el.empty();
 			this.el = null;

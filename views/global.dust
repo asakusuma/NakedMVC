@@ -20,6 +20,7 @@
     </div>
     <footer><a class="push-link" href="/">Home</a></footer>
   	<script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/lib/bootstrap.min.js"></script>
     <script data-main="/javascripts/frontend-bootstrap.js" src="/javascripts/lib/require.js"></script>
   </body>
 </html>

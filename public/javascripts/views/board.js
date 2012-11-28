@@ -21,9 +21,14 @@ define([
 			this.el = el;
 			this.data = {};
 			_.bindAll(this);
-			return {
-				entityKey: "boards"
-			};
+			return [
+				{
+					entityKey: "boards"
+				},
+				{
+					entityKey: "cards"
+				}
+			];
 		},
 		setData: function(query, data) {
 			if(data && data.attributes) {
