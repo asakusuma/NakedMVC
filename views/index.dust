@@ -4,9 +4,3 @@
 	<li><a href="/boards/{key}" class="push-link">{value.title}</a></li>
 {/boards}
 </ul>
-<!--
-<form class="form-inline">
-  <input type="text" class="input-large" id="new-board-name" placeholder="Board Name">
-  <button class="btn btn-primary" id="new-board-button" type="button">New Board</button>
-</form>
--->
