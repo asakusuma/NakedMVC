@@ -21,6 +21,9 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			}, function() {
 
 			}, this);
+
+			//Register View Events
+			this.view.on('boardCreated', _.bind(this.onBoardCreated, this));
 		},
 		onRenderMarkupFinished: function(event, html) {
 			//if on the client
@@ -28,6 +31,13 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 				this.view.postRender();
 			}		
 			this.renderCallback(html);
+		},
+		onBoardCreated: function(event, obj) {
+			if(obj.title) {
+				obj.cards = [];
+				obj.type = 'Board',
+				DataFactory.create(obj);
+			}
 		},
 		remove: function() {
 			this.dataPromise = null;
