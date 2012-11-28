@@ -24,7 +24,7 @@
     "ejs-locals": "*",
     "less-middleware": "*",
     "swig": "~0.12.1",
-    "socket":"*",
+    "socket.io":"*",
     "cradle":"*",
     "async":"*",
     "jsdom":"*"
