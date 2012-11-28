@@ -62,20 +62,16 @@ define([
   					}
   				}
   			}
-  			for(var i = 0; i < cards.length; i++) {
-  				var cardEl = this.ul.find('[data-card-id="' + cards[i].get('_id') + '"]');
-  				if(cardEl.length > 0) {
-  					
-  					this.gridster.remove_widget(cardEl, (function(card,view) {
-  						return function() {
-  							view.addCard(card);
-  						}
-  					})(cards[i],this));
-  					
-  				} else {
-  					this.addCard(cards[i]);
-  				}
-  			}
+
+  			this.gridster.remove_all_widgets((function(cards,view) {
+				return _.once(function() {
+					for(var i = 0; i < cards.length; i++) {
+  						view.addCard(cards[i]);
+  					}
+				});
+			})(cards,this));
+
+  			
 		},
 		addCard: function(model) {
 			dust.render("board-card", model.attributes, _.bind(function(err, out) {
