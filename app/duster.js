@@ -52,6 +52,15 @@ function compile_dust(path, curr, prev) {
   });
 }
 
+var execFile = require('child_process').execFile;
+execFile('find', [ input_path ], function(err, stdout, stderr) {
+    var file_list = stdout.split('\n').filter(function(path) {
+      return path.indexOf('.dust') !== -1;
+    }).forEach(function(path) {
+      compile_dust(path);
+    });
+});
+
 watch.createMonitor(input_path, function (monitor) {
   console.log("Watching " + input_path);
   monitor.files['*.dust', '*/*'];

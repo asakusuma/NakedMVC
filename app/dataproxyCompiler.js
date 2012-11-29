@@ -120,6 +120,8 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     
   }
 
+  compile_dataproxy();
+
   watch.createMonitor(input_path, function (monitor) {
     console.log("Watching " + input_path);
     monitor.files['dataproxy.js', '*/*'];
