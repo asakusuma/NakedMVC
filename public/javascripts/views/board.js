@@ -30,6 +30,7 @@ define([
 				}
 			];
 			this.blockGridsterDraw = false;
+			this.numCards = 0;
 		},
 		setData: function(query, data) {
 			if(data && data.attributes) {
@@ -382,7 +383,8 @@ define([
 				redraw = false;
 
 			console.log(this.ul.find('li[data-card-id]').length + ' - ' +cards.length);
-			if(this.ul.find('li[data-card-id]').length !== cards.length) redraw = true;
+			if(this.numCards !== cards.length) redraw = true;
+			this.numCards = cards.length;
 			for(var i = 0; i < cards.length; i++) {
   				if(cards[i].attributes) {
   					cards[i].set('row',row);
@@ -395,7 +397,7 @@ define([
 
   			//layout && layout.length === cards.length
   			console.log(layout);
-  			if(true) {
+  			if(layout) {
   				for(var i = 0; i < cards.length; i++) {
   					if(layout[cards[i].attributes._id]) {
   						var id = cards[i].get('_id'),
@@ -409,18 +411,23 @@ define([
   				}
   			}
   			if(redraw) {
+  				this.blockGridsterDraw = true;
   				if(this.gridster.serialize().length !== 0) {
   					this.gridster.remove_all_widgets((function(cards,view) {
 						return _.once(function() {
 							for(var i = 0; i < cards.length; i++) {
 		  						view.addCard(cards[i]);
 		  					}
+		  					view.blockGridsterDraw = false;
+		  					view.numCards = cards.length;
 						});
 					})(cards,this));
   				} else {
   					for(var i = 0; i < cards.length; i++) {
 		  				this.addCard(cards[i]);
 		  			}
+		  			this.numCards = cards.length;
+		  			this.blockGridsterDraw = false;
   				}
   				
   			}
