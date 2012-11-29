@@ -31,6 +31,7 @@ define([
 			];
 			this.blockGridsterDraw = false;
 			this.numCards = 0;
+			this.cardLayout = null;
 		},
 		setData: function(query, data) {
 			if(data && data.attributes) {
@@ -415,6 +416,7 @@ define([
   				if(this.gridster.serialize().length !== 0) {
   					this.gridster.remove_all_widgets((function(cards,view) {
 						return _.once(function() {
+							view.ul.html("");
 							for(var i = 0; i < cards.length; i++) {
 		  						view.addCard(cards[i]);
 		  					}
