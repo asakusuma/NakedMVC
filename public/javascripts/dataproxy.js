@@ -3,7 +3,7 @@ function DataProxy(io) {
 _.bindAll(this);
 this.models = {};
 this.promises = {};
-this.socket = io.connect('http://localhost:3000');
+this.socket = io.connect('http://akusuma-mn:3000');
 this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));} 
 DataProxy.prototype.serverModelsChanged = function(data) {  
 if(data.attributes._id) { 

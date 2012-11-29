@@ -31,7 +31,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
 */
 
 
-      var host = 'http://localhost:3000',
+      var host = 'http://akusuma-mn:3000',
       output = "define(['base/promise', 'models/model'], function(Promise, Model) { \n";
       output += "function DataProxy(io) { \n";
       output += "_.bindAll(this);\n";

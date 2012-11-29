@@ -29,6 +29,7 @@ define([
 					entityKey: "cards"
 				}
 			];
+			this.blockGridsterDraw = false;
 		},
 		setData: function(query, data) {
 			if(data && data.attributes) {
@@ -393,11 +394,10 @@ define([
   			}
 
   			//layout && layout.length === cards.length
-
-  			if(layout && layout.length === cards.length) {
+  			console.log(layout);
+  			if(true) {
   				for(var i = 0; i < cards.length; i++) {
-  					if(layout[cards[i]] && layout[cards[i]].attributes) {
-  						alert('layout');
+  					if(layout[cards[i].attributes._id]) {
   						var id = cards[i].get('_id'),
   							cardEl = this.ul.find('[data-card-id="'+id+'"]');
   						if(cardEl.attr('data-row') != layout[id].row || cardEl.attr('data-col') != layout[id].col) {
