@@ -367,7 +367,6 @@ define([
 
 			//Hack for determining if last card is an actual model, or just an id
 			if(cards.length > 0 && cards[cards.length - 1].attributes) {
-				console.log(cards);
 				if(this.el) this.updateCards();
 			}
 		},
@@ -383,21 +382,17 @@ define([
 				layout = this.data.get('layout'),
 				redraw = false;
 
-			console.log(this.ul.find('li[data-card-id]').length + ' - ' +cards.length);
 			if(this.numCards !== cards.length) redraw = true;
 			this.numCards = cards.length;
 			for(var i = 0; i < cards.length; i++) {
   				if(cards[i].attributes) {
   					cards[i].set('row',row);
 	  				cards[i].set('col',col);
-	  				console.log(row + ', ' + col);
 	  				row = (row+1)%3;
 	  				if(row === 3) col++;
   				}
   			}
-
-  			//layout && layout.length === cards.length
-  			console.log(layout);
+  			
   			if(layout) {
   				for(var i = 0; i < cards.length; i++) {
   					if(layout[cards[i].attributes._id]) {

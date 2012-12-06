@@ -56,8 +56,6 @@ define('dataproxy', [
           this.request({
             id: change.id
           }).then(_.bind(function(results) {
-            console.log('U[dated from db');
-            console.log(results);
             this.queryListeners[change.id].trigger('change', results);
           },this));
         } else if(this.queryListeners[change.doc.type]) {
