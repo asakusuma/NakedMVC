@@ -188,14 +188,14 @@ define([
 
       if(this.gridster.serialize().length !== 0) {
         //If cards exist, remove them first before re-drawing
-        this.gridster.remove_all_widgets((function(cards,view) {
+        this.gridster.remove_all_widgets(_.bind((function(cards,view) {
           return _.once(function() {
             view.ul.html("");
             async.parallel(functions, _.bind(function(err, results) {
               this.trigger('postRendered');
             }, this));
           });
-        })(cards,this));
+        })(cards,this), this));
       } else {
         async.parallel(functions, _.bind(function(err, results) {
           this.trigger('postRendered');
