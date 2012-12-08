@@ -87,6 +87,15 @@ define('dataproxy', [
       }
     },
     _createModel: function(attrs) {
+      //Object is already a model
+      if(attrs.isModel) {
+        return attrs;
+      }
+      //Object is a flattened model
+      if(attrs.attributes) {
+        attrs = attrs.attributes;
+      }
+
       if(this.hash[attrs['_id']]) {
         return this.hash[attrs['_id']];
       } else {
@@ -115,17 +124,18 @@ define('dataproxy', [
       }
       return promise;
     },
-    update: function(model) {
+    update: function(model, clientID) {
       var promise = new Promise(),
         map = {
           Board: 'updateBoard'
         };
-      if(model) {
-        if(model.attributes.type && map[model.attributes.type]) {
+
+      //If model is set from client, it's a flat object, and not an actual model, so it needs to be converted to an acutal model object
+      model = new Model(model.attributes);
+
+      if(model && model.attributes && model.attributes.type && map[model.attributes.type]) {
+          model.setOriginID(clientID);
           promise = this[map[model.attributes.type]](model);
-        } else {
-          promise.reject();
-        }
       } else {
         promise.reject();
       }
@@ -134,7 +144,7 @@ define('dataproxy', [
     updateBoard: function(board) {
       var foreignKeys = this._getForeignKeys(board.attributes);
 
-      //Update foreign
+      //Update foreign/related/child models
       for(var i = 0; i < foreignKeys.length; i++) {
         var children = board.attributes[foreignKeys[i]];
         board.attributes[foreignKeys[i]] = [];
@@ -144,18 +154,8 @@ define('dataproxy', [
           } else {
             board.attributes[foreignKeys[i]].push(children[c]);
           }
-          
         }
-        
       }
-
-      /*
-      //Delete foreign
-      for(var i = 0; i < foreignKeys.length; i++) {
-        delete board.attributes[foreignKeys[i]];
-      }
-      */
-      //Checked
       return this._update(board.attributes);
     },
     _update: function(obj) {
@@ -164,8 +164,11 @@ define('dataproxy', [
         this.hash[obj._id] = null;
         delete this.hash[obj._id];
         this.db.merge(obj._id, obj, function (err, res) {
-          if(err) promise.reject();
-          promise.resolve();
+          if(err) {
+            promise.reject(err);
+          } else {
+            promise.resolve();
+          }
         });
       }
       return promise;

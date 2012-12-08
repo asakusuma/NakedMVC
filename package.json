@@ -27,6 +27,7 @@
     "socket.io":"*",
     "cradle":"*",
     "async":"*",
-    "jsdom":"*"
+    "jsdom":"*",
+    "node-guid": "*"
   }
 }

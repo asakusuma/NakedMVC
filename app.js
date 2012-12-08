@@ -7,7 +7,8 @@ var path = require('path')
   , $ = require('jquery')
   , _ = require('underscore')
   , cons = require('consolidate')
-  , templates = require('./app/templates.js');
+  , templates = require('./app/templates.js')
+  , guid = require('node-guid');
 
 /*
 process.on('uncaughtException', function (err) {
@@ -115,9 +116,12 @@ function(components, routes, schema, application, dataproxy) {
       for(var index in data.arguments) {
         args.push(data.arguments[index]);
       }
+      args.push(socket.id);
 
       dataproxy._registerQuery(data, _.bind(function(event, models) {
-        socket.emit('models_changed', models);
+        if(!models.getOriginID || models.getOriginID() !== socket.id) {
+          socket.emit('models_changed', models);
+        }
       },this));
 
       dataproxy[data.name].apply(dataproxy, args).then(function(results) {

@@ -124,7 +124,6 @@ define([
       }
 		},
     updateBoard: function() {
-      console.log('Update board!');
       var cards = this.data.attributes.cards;
       //Hack for determining if last card is an actual model, or just an id
       if(cards.length > 0 && cards[cards.length - 1].attributes) {
@@ -148,6 +147,7 @@ define([
       var functions = [];
 
 			for(var i = 0; i < cards.length; i++) {
+        //Set default layout info
 				if(cards[i].attributes) {
 					cards[i].set('row',row);
   				cards[i].set('col',col);
@@ -171,7 +171,7 @@ define([
           }
         })(cards[i], this));
 			}
-  			
+      //If board has a set layout for cards, inject layout info card models
 			if(layout) {
 				for(var i = 0; i < cards.length; i++) {
 					if(layout[cards[i].attributes._id]) {
@@ -182,8 +182,10 @@ define([
 						}
 						cards[i].set('row',layout[id].row);
 						cards[i].set('col',layout[id].col);
+            console.log(layout[id].row + ' - ' + layout[id].col);
 					}
 				}
+        console.log('----------');
 			}
 
       if(this.gridster.serialize().length !== 0) {
@@ -197,6 +199,7 @@ define([
           });
         })(cards,this), this));
       } else {
+        //No cards exist. Just render cards
         async.parallel(functions, _.bind(function(err, results) {
           this.trigger('postRendered');
         }, this));

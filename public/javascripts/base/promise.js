@@ -2,7 +2,7 @@ define(['lib/underscore'],function(_){
 
   function Promise() {
     this.success = function() {},
-    this.failure = function() { console.log ("Promise rejected"); },
+    this.failure = function() {},
     this.context = {},
     this.registered = false,
     // 0 = waiting
@@ -39,12 +39,15 @@ define(['lib/underscore'],function(_){
     }
   }
 
-  Promise.prototype.reject = function() {
+  Promise.prototype.reject = function(error) {
     this.status = 2;
     if(this.rejectArgs === false) {
       this.rejectArgs = arguments;
     }
     if(this.registered) {
+      if(error) {
+        console.log(error);
+      }
       this.failure.apply(this.context,arguments);
     }
   }
