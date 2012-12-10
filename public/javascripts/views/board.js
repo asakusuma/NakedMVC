@@ -21,16 +21,13 @@ define([
 			this.el = el;
 			this.data = {};
 			_.bindAll(this);
-
       //Flag to determine if post render is in process
       this.isPostRendering = false;
-
       //Flag to determine whether or not to re-postRender when postRender completes
       //Used when data is changed while in the middel of postRendering
       this.refreshOnPostRender = false;
-
+      //Bind callback for when postRender completes
       this.on('postRendered', _.bind(this.onPostRender));
-
 			return [
 				{ //Board to display
 					entityKey: "boards"
@@ -139,7 +136,6 @@ define([
   				row = (row+1)%3;
   				if(row === 3) col++;
 				}
-
         //Create card render function
         functions.push((function(model, context) {
           return function(callback) {
@@ -171,7 +167,6 @@ define([
 					}
 				}
 			}
-
       if(this.gridster.serialize().length !== 0) {
         //If cards exist, remove them first before re-drawing
         this.gridster.remove_all_widgets(_.bind((function(cards,view) {
@@ -188,15 +183,6 @@ define([
           this.trigger('postRendered');
         }, this));
       }
-		},
-		addCard: function(model) {
-			dust.render("board-card", model.attributes, _.bind(function(err, out) {
-				if(err) throw err;
-				var el = $(out),
-					row = el.attr('data-row'),
-					col = el.attr('data-col');
-				this.gridster.add_widget(out,1,1,col,row);
-			}, this));
 		},
 		renderCards: function(err, out) {
 			if(err) throw err;
@@ -256,6 +242,7 @@ define([
 				}).data('gridster');
 			}, this));
 		},
+    //Save layout when cards are dragged
 		cardDragged: function() {
 			var cards = this.data.get('cards'),
 				layout = {};
