@@ -29,14 +29,15 @@ define([
       //Bind callback for when postRender completes
       this.on('postRendered', _.bind(this.onPostRender));
 			return [
-				{ //Board to display
+        {
+          //Board to display
 					entityKey: "boards"
-				},
-				{ //Cards to populate typeahead for adding new cards
+				}, {
+          //Cards to populate typeahead for adding new cards
           //to the board
 					entityKey: "cards"
 				}
-			];
+      ];
 		},
 		setData: function(query, data) {
 			if(data && data.attributes) {
