@@ -1,0 +1,30 @@
+<!DOCTYPE html>  <html> <head>   <title>frontend-bootstrap.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="components.html">                 components.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="dom.html">                 dom.js               </a>                                           <a class="source" href="frontend-bootstrap.html">                 frontend-bootstrap.js               </a>                                           <a class="source" href="router.html">                 router.js               </a>                                           <a class="source" href="routes.html">                 routes.js               </a>                                           <a class="source" href="templates.html">                 templates.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               frontend-bootstrap.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nx">requirejs</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+    <span class="nx">nodeRequire</span><span class="o">:</span> <span class="nx">require</span><span class="p">,</span>
+    <span class="nx">baseUrl</span><span class="o">:</span> <span class="s2">&quot;/javascripts&quot;</span><span class="p">,</span>
+    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;schema&quot;</span><span class="o">:</span> <span class="s2">&quot;/schema&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;app&quot;</span> <span class="o">:</span> <span class="s2">&quot;/javascripts&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;jquery&quot;</span><span class="o">:</span> <span class="s2">&quot;lib/jquery-1.8.2.min&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;dustjs-linkedin&quot;</span><span class="o">:</span> <span class="s2">&quot;lib/dust-full-1.1.1&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;async&quot;</span><span class="o">:</span><span class="s2">&quot;lib/async&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;underscore&quot;</span><span class="o">:</span> <span class="s2">&quot;lib/underscore&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;bootstrap&quot;</span><span class="o">:</span> <span class="s2">&quot;lib/boostrap.min&quot;</span>
+    <span class="p">},</span>
+    <span class="nx">shim</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s1">&#39;jquery&#39;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">deps</span><span class="o">:</span> <span class="p">[],</span>
+            <span class="nx">exports</span><span class="o">:</span> <span class="s1">&#39;$&#39;</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;dustjs-linkedin&#39;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">deps</span><span class="o">:</span> <span class="p">[],</span>
+            <span class="nx">exports</span><span class="o">:</span> <span class="s1">&#39;dust&#39;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">requirejs</span><span class="p">([</span><span class="s1">&#39;router&#39;</span><span class="p">,</span><span class="s1">&#39;templates&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">router</span><span class="p">,</span> <span class="nx">registerTemplates</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">registerTemplates</span><span class="p">();</span>
+    <span class="nx">router</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">app</span><span class="p">);</span>
+<span class="p">});</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

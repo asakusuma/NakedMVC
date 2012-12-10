@@ -39,6 +39,7 @@ define('dataproxy', [
         since: 'now'
       });
 
+      //Listen to any database changes
       this.changeFeed.on('change', _.bind(this._dataChanged,this));
     },
     getNumBoards: function(success, error, context) {
@@ -50,6 +51,7 @@ define('dataproxy', [
     _somePrivateMethod: function() {
 
     },
+    //Callback for database changes
     _dataChanged: function(change) {
       if(change.doc) {
         if(this.queryListeners[change.id]) {
@@ -67,6 +69,7 @@ define('dataproxy', [
         }
       }
     },
+    //Listen to any changes to data within the given query
     _registerQuery: function(command, callback) {
       if(command.name === 'request') {
         var query = command.arguments[0],

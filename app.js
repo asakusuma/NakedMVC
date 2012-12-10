@@ -10,16 +10,14 @@ var path = require('path')
   , templates = require('./app/templates.js')
   , guid = require('node-guid');
 
-/*
+
+//Exit on crash
 process.on('uncaughtException', function (err) {
   server.close();
 });
 process.on('SIGTERM', function () {
   server.close();
 });
-*/
-
-
 
 requirejs.config({
     nodeRequire: require,
@@ -42,7 +40,6 @@ function(components, routes, schema, application, dataproxy) {
 
   app.engine('dust', cons.dust);
   app.configure(function(){
-    //app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     app.use(express.favicon());
@@ -60,9 +57,9 @@ function(components, routes, schema, application, dataproxy) {
     app.use(express.errorHandler());
   });
 
-   server.listen(3000);
+  server.listen(3000);
 
-   var routeMap = [];
+  var routeMap = [];
 
   //Setup routes that hit pages
   for(route in routes) {
@@ -75,12 +72,12 @@ function(components, routes, schema, application, dataproxy) {
           var controller = new page.controllerClass();
           controller.init(req.params, function(html) {
             
-            //BEGIN Workaround for weird behavior of req.params
+            //Workaround for weird behavior of req.params
             var params = {};
             for(var key in req.params) {
               params[key] = req.params[key];
             }
-            //END Workaround for weird behavior of req.params
+
             if(!res._headerSent) {
               res.render('global', {
                 title: page.title,
@@ -97,6 +94,7 @@ function(components, routes, schema, application, dataproxy) {
     }
   }
 
+  //Build route map from app routes
   for(var i = 0; i < app.routes.get.length; i++) {
     routeMap.push({
       route: app.routes.get[i].path,
@@ -110,6 +108,7 @@ function(components, routes, schema, application, dataproxy) {
     res.send(schema.script);
   });
 
+  //Setup data serving and subscribing
   application.io.sockets.on('connection', function (socket) {
     socket.on('dp_request', function (data, callback) {
       var args = [];
