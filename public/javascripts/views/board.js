@@ -39,17 +39,6 @@ define([
 					entityKey: "cards"
 				}
 			];
-
-      /*
-			this.blockGridsterDraw = false;
-			this.numCards = 0;
-			this.cardLayout = null;
-
-      // Setup data update queue for handling incoming data updates
-      this.dataUpdates = new Eventable();
-      this.dataUpdates.queue = [];
-      this.dataUpdates.queue
-      */
 		},
 		setData: function(query, data) {
 			if(data && data.attributes) {
