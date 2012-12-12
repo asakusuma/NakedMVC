@@ -11,8 +11,10 @@ requirejs.config({
 });
 
 requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
-  var input_path = "./app/"; // directory of dust templates are stored with .dust file extension
-  var output_path = "./public/javascripts/dataproxy.js"; // directory where the compiled .js files should be saved to
+  // directory of dust templates are stored with .dust file extension
+  var input_path = "./app/";
+  // directory where the compiled .js files should be saved to
+  var output_path = "./public/javascripts/dataproxy.js";
 
   var fs = require('fs');
   var dust = require('dustjs-linkedin');
@@ -31,10 +33,17 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     output += "this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));"
     output += "} \n";
 
-    output += "DataProxy.prototype.serverModelsChanged = function(data) {  \n";
+    output += "DataProxy.prototype.serverModelsChanged = function(data, IAmOrigin) {  \n";
       output += "if(data.attributes._id) { \n";
         output += "var model = this.modelize(data);  \n";
-        output += "model.trigger('change'); \n";
+        output += "if(IAmOrigin === true) {";
+          output += "console.log('I am origin');"
+          //Send a different event if this particular client was the origin of the change
+          output += "model.trigger('originChange'); \n";
+        output += "} else {";
+          output += "console.log('I am NOT origin');"
+          output += "model.trigger('change'); \n";
+        output += "} \n";
         output += "var key = model.get('type').toLowerCase() + 's';";
         
         output += "if(this.promises[key]) {";
@@ -67,6 +76,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
         output += " } else { \n";
         output += "model = new Model(data.attributes);\n";
         output += "model.on('change', _.bind(this.modelChanged, this));\n";
+        output += "model.on('broadcastChange', _.bind(this.modelChanged, this));\n";
         output += "this.models[data.attributes._id] = model;\n";
         output += " }";
       output += "return model;\n";

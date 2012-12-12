@@ -3,12 +3,14 @@ function DataProxy(io) {
 _.bindAll(this);
 this.models = {};
 this.promises = {};
-this.socket = io.connect('http://akusuma-mn:3000');
+this.socket = io.connect('http://akusuma-mn.local:3000');
 this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));} 
-DataProxy.prototype.serverModelsChanged = function(data) {  
+DataProxy.prototype.serverModelsChanged = function(data, IAmOrigin) {  
 if(data.attributes._id) { 
 var model = this.modelize(data);  
-model.trigger('change'); 
+if(IAmOrigin === true) {console.log('I am origin');model.trigger('originChange'); 
+} else {console.log('I am NOT origin');model.trigger('change'); 
+} 
 var key = model.get('type').toLowerCase() + 's';if(this.promises[key]) {var promises = this.promises[key]; 
 for(var i = 0; i < promises.length; i++) { 
 promises[i].update(model); 
@@ -35,6 +37,7 @@ model.attributes = data.attributes;
  } else { 
 model = new Model(data.attributes);
 model.on('change', _.bind(this.modelChanged, this));
+model.on('broadcastChange', _.bind(this.modelChanged, this));
 this.models[data.attributes._id] = model;
  }return model;
 } else { return data; } 

@@ -118,9 +118,11 @@ function(components, routes, schema, application, dataproxy) {
       args.push(socket.id);
 
       dataproxy._registerQuery(data, _.bind(function(event, models) {
+        var IAmOrigin = true;
         if(!models.getOriginID || models.getOriginID() !== socket.id) {
-          socket.emit('models_changed', models);
+          IAmOrigin = false;
         }
+        socket.emit('models_changed', models, IAmOrigin);
       },this));
 
       dataproxy[data.name].apply(dataproxy, args).then(function(results) {
