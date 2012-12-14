@@ -21,11 +21,7 @@
   	<script src="/socket.io/socket.io.js"></script>
      <script src="/javascripts/lib/jquery-1.8.2.min.js"></script>
     <script src="/javascripts/lib/bootstrap.min.js"></script>
-
-    <script src="/javascripts/lib/inject.min.js"></script>
-    <script src="/javascripts/frontend-bootstrap.js"></script>
-    
-    <!-- <script data-main="/javascripts/frontend-bootstrap.js" src="/javascripts/lib/require.js"></script> -->
+    <script data-main="/javascripts/frontend-bootstrap.js" src="/javascripts/lib/require.js"></script>
 
   </body>
 </html>
