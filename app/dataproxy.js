@@ -32,6 +32,10 @@ define('dataproxy', [
       });
       this.db = new cradle.Connection().database(dbName);
       this.hash = {};
+
+      //Initialize query listener object. The query listener object is a hash of query listeners.
+      //Query listeners are eventable objects that represent a query. To subscribe to changes to
+      //data within a given query, subscribe to the 'change' event on the query listener counterpart.
       this.queryListeners = {};
 
       this.changeFeed = this.db.changes({ 
@@ -54,13 +58,17 @@ define('dataproxy', [
     //Callback for database changes
     _dataChanged: function(change) {
       if(change.doc) {
+        //Update model query listener, i.e. Asa's Board
         if(this.queryListeners[change.id]) {
           this.request({
             id: change.id
           }).then(_.bind(function(results) {
             this.queryListeners[change.id].trigger('change', results);
           },this));
-        } else if(this.queryListeners[change.doc.type]) {
+        }
+
+        //Update type query listener, i.e. Boards
+        if(this.queryListeners[change.doc.type]) {
           this.request({
             entityKey: change.doc.type
           }).then(_.bind(function(results) {
@@ -161,6 +169,7 @@ define('dataproxy', [
       }
       return this._update(board.attributes);
     },
+    //Update a database document
     _update: function(obj) {
       var promise = new Promise();
       if(obj._id) {
@@ -188,6 +197,7 @@ define('dataproxy', [
       }
       return this._query(query);
     },
+    //Returns a list of keys for the given object that hold ids of other objects
     _getForeignKeys: function(doc) {
       var foreignKeys = [];
       for(var key in doc) {
@@ -202,17 +212,18 @@ define('dataproxy', [
       }
       return foreignKeys;
     },
+    //Execute a query
     _query: function(query) {
       var promise = new Promise();
+      //If the query is requesting an individual document
       if(query.id) {
         this.db.get(query.id, _.bind(function(err, doc) {
           if(err) {
             promise.reject(err);
           } else {
             var foreignKeys = this._getForeignKeys(doc);
-
             if(foreignKeys.length > 0) {
-              //Replace foreign IDS with actual data
+              //Replace foreign IDs with actual data
               this.async.map(foreignKeys, _.bind(
                 function(entityKey, cb) {
                   this.request({
@@ -239,6 +250,7 @@ define('dataproxy', [
           }
         }, this));
         return promise;
+      //If the query is a list of documents
       } else if(query.ids && query.entityKey) {
         this.async.map(query.ids, _.bind(
           function(id, cb) {
@@ -255,6 +267,7 @@ define('dataproxy', [
             promise.resolve(results);
         });
         return promise; 
+      //If the query is * of an entityKey
       } else if(query.entityKey) {
         this.db.view(query.entityKey+'/all', {}, function(err, doc) {
           promise.resolve(doc);

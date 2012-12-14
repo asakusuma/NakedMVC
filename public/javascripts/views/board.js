@@ -204,6 +204,7 @@ renderCards: function(err, out) {
 	if(!cards) {
 		this.render();
 	} else {
+		//Set the default row, col position for all cards
 		for(var i = 0; i < cards.length; i++) {
 			cards[i].set('row',col);
 			cards[i].set('col',row);
@@ -213,11 +214,13 @@ renderCards: function(err, out) {
 		if(layout) {
 			for(var i = 0; i < cards.length; i++) {
 				if(layout[cards[i].get('_id')]) {
+					//If a layout rule exists for a particular card, set the position
 					cards[i].set('row',layout[cards[i].get('_id')].row);
 					cards[i].set('col',layout[cards[i].get('_id')].col);
 				}
 			}
 		}
+		//Render cards in parallel
 		async.map(cards, function(item, callback) {
 			dust.render("board-card", item.attributes, function(err, out) {
 				if(err) throw err;
