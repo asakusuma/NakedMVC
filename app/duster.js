@@ -3,7 +3,7 @@
 // by Dan McGrady http://dmix.ca
 // modified by Asa Kusuma
 
-var input_path = "./views"; // directory of dust templates are stored with .dust file extension
+var input_path = "./templates"; // directory of dust templates are stored with .dust file extension
 var output_path = "./public/javascripts/"; // directory where the compiled .js files should be saved to
 var backend_output_path = "./app/";
 
