@@ -10,15 +10,6 @@ var path = require('path')
   , templates = require('./app/templates.js')
   , guid = require('node-guid');
 
-
-//Exit on crash
-process.on('uncaughtException', function (err) {
-  server.close();
-});
-process.on('SIGTERM', function () {
-  server.close();
-});
-
 requirejs.config({
     nodeRequire: require,
     baseUrl: "public/javascripts/",
@@ -38,9 +29,17 @@ function(components, routes, schema, application, dataproxy) {
     express = application.express,
     server = application.server;
 
+  //Exit on crash
+  process.on('uncaughtException', function (err) {
+    server.close();
+  });
+  process.on('SIGTERM', function () {
+    server.close();
+  });
+
   app.engine('dust', cons.dust);
   app.configure(function(){
-    app.set('views', __dirname + '/views');
+    app.set('views', __dirname + '/templates');
     app.set('view engine', 'dust');
     app.use(express.favicon());
     app.use(express.logger('dev'));
