@@ -1,3 +1,6 @@
+//The dataproxy is an abstraction for talking with the CouchDB database. While CouchDB is a NoSQL database, it's
+//used relationally in NakedMVC.
+
 define('dataproxy', [
     'base/eventable',
     'base/promise',
