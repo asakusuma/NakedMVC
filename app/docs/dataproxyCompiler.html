@@ -1,0 +1,127 @@
+<!DOCTYPE html>  <html> <head>   <title>dataproxyCompiler.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="application.html">                 application.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="dataproxyCompiler.html">                 dataproxyCompiler.js               </a>                                           <a class="source" href="dom.html">                 dom.js               </a>                                           <a class="source" href="duster.html">                 duster.js               </a>                                           <a class="source" href="schema.html">                 schema.js               </a>                                           <a class="source" href="schemaBuilder.html">                 schemaBuilder.js               </a>                                           <a class="source" href="templates.html">                 templates.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               dataproxyCompiler.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">requirejs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;requirejs&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">hostname</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;os&#39;</span><span class="p">).</span><span class="nx">hostname</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>TODO: do something less hacky here</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">hostname</span> <span class="o">=</span> <span class="nx">hostname</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;.local&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="nx">requirejs</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+    <span class="nx">nodeRequire</span><span class="o">:</span> <span class="nx">require</span><span class="p">,</span>
+    <span class="nx">baseUrl</span><span class="o">:</span> <span class="s2">&quot;public/javascripts/&quot;</span><span class="p">,</span>
+    <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;app&quot;</span><span class="o">:</span> <span class="s2">&quot;../../app&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;schema&quot;</span><span class="o">:</span> <span class="s2">&quot;../../app/schema&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;dataproxy&quot;</span><span class="o">:</span> <span class="s2">&quot;../../app/dataproxy&quot;</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">requirejs</span><span class="p">([</span><span class="s1">&#39;dataproxy&#39;</span><span class="p">,</span> <span class="s1">&#39;underscore&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">dataproxy</span><span class="p">,</span> <span class="nx">_</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>directory of dust templates are stored with .dust file extension</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">input_path</span> <span class="o">=</span> <span class="s2">&quot;./app/&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>directory where the compiled .js files should be saved to</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">output_path</span> <span class="o">=</span> <span class="s2">&quot;./public/javascripts/dataproxy.js&quot;</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">dust</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;dustjs-linkedin&#39;</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">watch</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">);</span>
+
+  <span class="kd">function</span> <span class="nx">compile_dataproxy</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">curr</span><span class="p">,</span> <span class="nx">prev</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Compile frontend dataproxy&quot;</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">host</span> <span class="o">=</span> <span class="s1">&#39;http://&#39;</span><span class="o">+</span><span class="nx">hostname</span><span class="o">+</span><span class="s1">&#39;:3000&#39;</span><span class="p">,</span>
+    <span class="nx">output</span> <span class="o">=</span> <span class="s2">&quot;define([&#39;base/promise&#39;, &#39;models/model&#39;], function(Promise, Model) { \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;function DataProxy(io) { \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;_.bindAll(this);\n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.models = {};\n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.promises = {};\n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.socket = io.connect(&#39;&quot;</span> <span class="o">+</span> <span class="nx">host</span> <span class="o">+</span> <span class="s2">&quot;&#39;);\n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.socket.on(&#39;models_changed&#39;, _.bind(this.serverModelsChanged,this));&quot;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;DataProxy.prototype.serverModelsChanged = function(data, IAmOrigin) {  \n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(data.attributes._id) { \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var model = this.modelize(data);  \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(IAmOrigin === true) {&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;console.log(&#39;I am origin&#39;);&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Send a different event if this particular client was the origin of the change</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model.trigger(&#39;originChange&#39;); \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} else {&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;console.log(&#39;I am NOT origin&#39;);&quot;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model.trigger(&#39;change&#39;); \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var key = model.get(&#39;type&#39;).toLowerCase() + &#39;s&#39;;&quot;</span><span class="p">;</span>
+        
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(this.promises[key]) {&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var promises = this.promises[key]; \n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;for(var i = 0; i &lt; promises.length; i++) { \n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;promises[i].update(model); \n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;DataProxy.prototype.modelChanged = function(event, data) { \n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.update(data);\n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;}\n&quot;</span><span class="p">;</span>
+
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;DataProxy.prototype.modelize = function(data) { \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(_.isArray(data)) { \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var models = [];\n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;for(var i = 0; i &lt; data.length; i++) { models.push(this.modelize(data[i])); }\n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;return models; \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} else if(_.isObject(data) &amp;&amp; data.attributes) {\n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;for(var key in data.attributes) {\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;data.attributes[key] = this.modelize(data.attributes[key]);\n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var model;\n&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(this.models[data.attributes._id]) {\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model = this.models[data.attributes._id]\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model.attributes = data.attributes;\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot; } else { \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model = new Model(data.attributes);\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model.on(&#39;change&#39;, _.bind(this.modelChanged, this));\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;model.on(&#39;broadcastChange&#39;, _.bind(this.modelChanged, this));\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.models[data.attributes._id] = model;\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot; }&quot;</span><span class="p">;</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;return model;\n&quot;</span><span class="p">;</span>
+
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} else { return data; } \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;}\n&quot;</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">dataproxy</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">func</span> <span class="o">=</span> <span class="nx">dataproxy</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">property</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;_&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">func</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;DataProxy.prototype.&quot;</span> <span class="o">+</span> <span class="nx">property</span> <span class="o">+</span> <span class="s2">&quot; = function() { \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var promise = new Promise();\n&quot;</span><span class="p">;</span>
+
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;var cb = _.bind(function(data) { \n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;promise.resolve(this.modelize(data)); \n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;}, this);&quot;</span>
+
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.socket.emit(&#39;dp_request&#39;, { name: &#39;&quot;</span> <span class="o">+</span> <span class="nx">property</span> <span class="o">+</span> <span class="s2">&quot;&#39;, arguments: arguments }, cb);\n&quot;</span><span class="p">;</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="nx">property</span> <span class="o">===</span> <span class="s1">&#39;request&#39;</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(arguments[0].entityKey &amp;&amp; !arguments[0].id) {\n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;if(!this.promises[arguments[0].entityKey]) {\n&quot;</span><span class="p">;</span>
+            <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.promises[arguments[0].entityKey] = [];\n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;}\n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;this.promises[arguments[0].entityKey].push(promise);\n&quot;</span><span class="p">;</span>
+          <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;}\n&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;return promise;\n&quot;</span><span class="p">;</span>
+        <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;} \n&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;return new DataProxy(io); \n&quot;</span><span class="p">;</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="s2">&quot;});\n&quot;</span><span class="p">;</span>
+    
+    <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="nx">output_path</span><span class="p">,</span> <span class="nx">output</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Saved &#39;</span> <span class="o">+</span> <span class="nx">output_path</span><span class="p">);</span>
+    <span class="p">});</span>
+    
+  <span class="p">}</span>
+
+  <span class="nx">compile_dataproxy</span><span class="p">();</span>
+
+  <span class="nx">watch</span><span class="p">.</span><span class="nx">createMonitor</span><span class="p">(</span><span class="nx">input_path</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">monitor</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Watching &quot;</span> <span class="o">+</span> <span class="nx">input_path</span><span class="p">);</span>
+    <span class="nx">monitor</span><span class="p">.</span><span class="nx">files</span><span class="p">[</span><span class="s1">&#39;dataproxy.js&#39;</span><span class="p">,</span> <span class="s1">&#39;*/*&#39;</span><span class="p">];</span>
+    <span class="nx">monitor</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;created&quot;</span><span class="p">,</span> <span class="nx">compile_dataproxy</span><span class="p">);</span>
+    <span class="nx">monitor</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;changed&quot;</span><span class="p">,</span> <span class="nx">compile_dataproxy</span><span class="p">);</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

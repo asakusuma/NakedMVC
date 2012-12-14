@@ -79,6 +79,8 @@ define('dataproxy', [
     },
     //Listen to any changes to data within the given query
     _registerQuery: function(command, callback) {
+      //If the query is a data request, make sure the client is updated
+      //whenever the requested data is changed in the future
       if(command.name === 'request') {
         var query = command.arguments[0],
           queryKey;
@@ -93,6 +95,8 @@ define('dataproxy', [
           if(!this.queryListeners[queryKey]) {
             this.queryListeners[queryKey] = new Eventable();
           }
+          //Register the given callback to fire whenever the data within
+          //the given query changes.
           this.queryListeners[queryKey].on('change',callback);
         }
       }
@@ -230,7 +234,6 @@ define('dataproxy', [
                     entityKey: entityKey,
                     ids: doc[entityKey]
                   }).then(function(data) {
-
                     cb(null, {
                       entityKey: entityKey,
                       data: data

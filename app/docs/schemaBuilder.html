@@ -1,0 +1,64 @@
+<!DOCTYPE html>  <html> <head>   <title>schemaBuilder.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="application.html">                 application.js               </a>                                           <a class="source" href="dataproxy.html">                 dataproxy.js               </a>                                           <a class="source" href="dataproxyCompiler.html">                 dataproxyCompiler.js               </a>                                           <a class="source" href="dom.html">                 dom.js               </a>                                           <a class="source" href="duster.html">                 duster.js               </a>                                           <a class="source" href="schema.html">                 schema.js               </a>                                           <a class="source" href="schemaBuilder.html">                 schemaBuilder.js               </a>                                           <a class="source" href="templates.html">                 templates.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               schemaBuilder.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nx">define</span><span class="p">([</span><span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fs</span><span class="p">,</span> <span class="nx">path</span><span class="p">)</span> <span class="p">{</span>
+  <span class="cm">/**</span>
+<span class="cm">   * Builds schema object</span>
+<span class="cm">   */</span>
+  <span class="kd">function</span> <span class="nx">SchemaBuilder</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="p">}</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Parse a directory for schemas, and return an array of schema objects</span>
+<span class="cm">   * @param {String} path directory to parse</span>
+<span class="cm">   * @return {Object} schema list object</span>
+<span class="cm">   */</span>
+  <span class="nx">SchemaBuilder</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">parseDirectory</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">dir</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">buildSchemaList</span><span class="p">(</span>
+        <span class="nx">fs</span><span class="p">.</span><span class="nx">readdirSync</span><span class="p">(</span><span class="nx">dir</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">contents</span> <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">dir</span><span class="p">,</span> <span class="nx">file</span><span class="p">)).</span><span class="nx">toString</span><span class="p">(),</span>
+                <span class="nx">json</span>     <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">parseJSON</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+
+            <span class="k">return</span> <span class="nx">json</span><span class="p">;</span>
+          <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
+      <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Create schema object from JSON</span>
+<span class="cm">   * @param {String} json the json text</span>
+<span class="cm">   * @return {Object}</span>
+<span class="cm">   */</span>
+  <span class="nx">SchemaBuilder</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">parseJSON</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>console.log(e);</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Build Schema List</span>
+<span class="cm">   * @param {Array} schemas list of schema objects</span>
+<span class="cm">   * @return {Object} schema list object</span>
+<span class="cm">   */</span>
+  <span class="nx">SchemaBuilder</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">buildSchemaList</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">schemas</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">schemaList</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="nx">schemas</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">schema</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">schema</span> <span class="o">&amp;&amp;</span> <span class="nx">schema</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">schemaList</span><span class="p">[</span><span class="nx">schema</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">schema</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">schemaList</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/**</span>
+<span class="cm">   * Build schema script source</span>
+<span class="cm">   */</span>
+  <span class="nx">SchemaBuilder</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">scriptSrc</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">schemaList</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">&#39;window.app = window.app || {};window.app.schemas = &#39;</span> <span class="o">+</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">schemaList</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;;&#39;</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">SchemaBuilder</span><span class="p">;</span>
+<span class="p">});</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
