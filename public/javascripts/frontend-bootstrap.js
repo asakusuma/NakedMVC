@@ -1,3 +1,4 @@
+/*
 requirejs.config({
     nodeRequire: require,
     baseUrl: "/javascripts",
@@ -26,3 +27,26 @@ requirejs(['router','templates'], function(router, registerTemplates) {
     registerTemplates();
     router.start(window.app);
 });
+*/
+
+Inject.addRule(/schema/, {
+  path: "../schema"
+});
+
+Inject.addRule(/^jquery$/, {
+  path: "lib/jquery-1.8.2.min",
+  pointcuts: {
+    after: function() {
+      module.setExports(jQuery.noConflict());
+      delete window["jQuery"];
+    }
+  }
+});
+
+
+
+//localStorage.clear();
+Inject.setExpires(0);
+Inject.setModuleRoot("/javascripts/");
+
+require.run("application");
