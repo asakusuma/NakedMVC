@@ -1,5 +1,8 @@
 var requirejs = require('requirejs');
 var hostname = require('os').hostname();
+
+// TODO: do something less hacky here
+hostname = hostname.replace('.local', '');
 requirejs.config({
     nodeRequire: require,
     baseUrl: "public/javascripts/",
