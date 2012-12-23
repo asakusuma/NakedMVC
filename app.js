@@ -68,25 +68,25 @@ function(components, routes, schema, application, dataproxy) {
       app.get(route, (function(page) {
         return function(req, res) {
           var params = req.params;
-          var controller = new page.controllerClass();
-          controller.init(req.params, function(html) {
-            
-            //Workaround for weird behavior of req.params
-            var params = {};
-            for(var key in req.params) {
-              params[key] = req.params[key];
+          var controller = new page.controllerClass({
+            params: req.params,
+            renderCallback: function(html) {
+              //Workaround for weird behavior of req.params
+              var params = {};
+              for(var key in req.params) {
+                params[key] = req.params[key];
+              }
+              if(!res._headerSent) {
+                res.render('global', {
+                  title: page.title,
+                  markup: html,
+                  route: req.route.path,
+                  url: req.url,
+                  params: JSON.stringify(params),
+                  routes: JSON.stringify(routeMap)
+                });
+              }   
             }
-
-            if(!res._headerSent) {
-              res.render('global', {
-                title: page.title,
-                markup: html,
-                route: req.route.path,
-                url: req.url,
-                params: JSON.stringify(params),
-                routes: JSON.stringify(routeMap)
-              });
-            }   
           });
         };
       })(page));
