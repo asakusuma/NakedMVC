@@ -18,4 +18,72 @@ BaseViews/BaseControllers vs Views/Controllers - singleton vs instance?
 
 
 View Query Language:
-range: last [#], 
+--------------------
+
+{
+	AND...
+}
+
+[
+	OR...
+]
+
+- Schema name is always singular, capitalized
+- DB should store copy of schema. When DB scheme and App schema don't match, update structure accordingly
+
+Post Schema
+{
+	author: {
+		type: 'Author'
+	},
+	text: {
+		type: 'string',
+		
+	},
+	categories: {
+		type: 'Category',
+		arity: 'many'
+	},
+	subcategories: {
+		type: 'Category',
+		arity: 'many'
+	}
+}
+
+Category Schema
+{
+
+}
+
+Author Schema 
+{
+	name: {
+		type: 'string'
+	}	
+}
+
+Example: last 5 posts by an author who's name starts 'Jo' AND (has at least 20 likes OR has at least 5 comments)
+{
+	schema: 'Post',
+	where: {
+		author: {
+			name: ['starts-with','Jo']
+		},
+		[
+			{
+
+			}
+		]
+	},
+	select: {
+		by: 'date',
+		order: 'ASC',
+		last: 5
+	}
+}
+
+
+
+
+
+
