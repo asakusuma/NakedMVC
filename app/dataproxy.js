@@ -2,7 +2,7 @@
 //used relationally in NakedMVC (sorry). Documents have a 'type', which corresponds to a schema.
 
 define('dataproxy', [
-    'base/eventable',
+    'lib/backbone',
     'base/promise',
     'cradle',
     'async',
@@ -10,7 +10,7 @@ define('dataproxy', [
     'models/model',
     'underscore'
   ], function (
-    Eventable, 
+    Backbone, 
     Promise, 
     Cradle, 
     Async, 
@@ -18,8 +18,8 @@ define('dataproxy', [
     Model,
     _
   ) {
-  var DataProxy = new Eventable();
-  DataProxy = _.extend(DataProxy, {
+
+  DataProxy = _.extend({
     init: function(cradle, async) {
       this.async = async;
       var dbName = 'app',
@@ -96,7 +96,7 @@ define('dataproxy', [
 
         if(queryKey) {
           if(!this.queryListeners[queryKey]) {
-            this.queryListeners[queryKey] = new Eventable();
+            this.queryListeners[queryKey] = _.extend({},Backbone.Events);
           }
           //Register the given callback to fire whenever the data within
           //the given query changes.
@@ -287,7 +287,7 @@ define('dataproxy', [
       promise.reject('Unknown query');
       return promise;
     }
-  });
+  }, Backbone.Events);
   DataProxy.init(Cradle, Async);
   return DataProxy;
 });

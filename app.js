@@ -30,12 +30,14 @@ function(components, routes, schema, application, dataproxy) {
     server = application.server;
 
   //Exit on crash
+  /*
   process.on('uncaughtException', function (err) {
     server.close();
   });
   process.on('SIGTERM', function () {
     server.close();
   });
+  */
 
   app.engine('dust', cons.dust);
   app.configure(function(){
@@ -116,7 +118,7 @@ function(components, routes, schema, application, dataproxy) {
       }
       args.push(socket.id);
 
-      dataproxy._registerQuery(data, _.bind(function(event, models) {
+      dataproxy._registerQuery(data, _.bind(function(models) {
         var IAmOrigin = true;
         if(!models.getOriginID || models.getOriginID() !== socket.id) {
           IAmOrigin = false;
