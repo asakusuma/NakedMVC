@@ -32,7 +32,6 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
 
     },
     onRenderMarkupFinished: function(html) {
-      console.log("MARKUP FINISHED");
       //if on the client
       if(typeof window !== 'undefined') {
         this.view.postRender();
