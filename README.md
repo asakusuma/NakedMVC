@@ -83,6 +83,15 @@ Example: last 5 posts by an author who's name starts 'Jo' AND (has at least 20 l
 }
 
 
+Data Set Object
+
+{
+	query: {
+		...
+	},
+	collection: 
+}
+
 
 
 

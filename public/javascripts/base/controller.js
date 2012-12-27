@@ -16,8 +16,21 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
         el: this.el,
         rendered: !this.renderMarkup
       });
-      var query = this.view.getQuery();
+      var requests = this.view.getDataRequests();
       this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
+
+      console.log(requests);
+
+      for(var i = 0; i < requests.length; i++) {
+        (function(request) {
+          var promise = DataFactory.request(request.query);
+          promise.then(function(data) {
+            console.log(data);
+          });
+        })(requests[i]);
+      }
+
+      /*
       this.dataPromise = DataFactory.request(query);
 
       this.dataPromise.then(function(data) {
@@ -25,6 +38,7 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
       }, function() {
 
       }, this);
+      */
 
       this.postInit();
     },

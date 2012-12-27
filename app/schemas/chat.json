@@ -1,0 +1,8 @@
+{
+  "name": "Message",
+  "fields": {
+    "content": {
+      "type": "string"
+    }
+  }
+}

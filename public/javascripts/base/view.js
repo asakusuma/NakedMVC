@@ -1,4 +1,4 @@
-define(['lib/backbone'],function(Backbone){
+define(['base/collection'],function(Collection){
   return Backbone.View.extend({
     query: {},
     initialize: function() {
@@ -7,8 +7,13 @@ define(['lib/backbone'],function(Backbone){
       this.data = {};
       _.bindAll(this);
     },
-    getQuery: function() {
-      return this.query;
+    getDataRequests: function() {
+      return _.map(this.queries, function(query) {
+        return {
+          query: query,
+          collection: new Collection()
+        };
+      });
     },
     render: function(err, out) {
       this.rendered = true;
