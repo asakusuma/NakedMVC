@@ -16,6 +16,9 @@ Dev Notes
 
 BaseViews/BaseControllers vs Views/Controllers - singleton vs instance?
 
+Frontend dataproxy returns collections/models
+Backend dataproxy returns flat object
+
 
 View Query Language:
 --------------------
