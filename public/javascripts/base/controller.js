@@ -19,7 +19,6 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
       });
       var requests = this.view.getDataRequests();
       this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-      console.log(requests);
       for(var i in requests) {
         (function(request) {
           var promise = DataFactory.request(request.query);

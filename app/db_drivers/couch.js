@@ -42,6 +42,9 @@ define([
         if(request.schema) {
           this.db.view(request.schema + '/all', _.bind(function(err, doc) {
             if(!err && doc.length > 0) {
+              for(var i = 0; i < doc.length; i ++) {
+                doc[i] = doc[i].value;
+              }
               promise.resolve(doc);
             } else {
               promise.reject(err);
