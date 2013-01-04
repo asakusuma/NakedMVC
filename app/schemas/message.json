@@ -3,6 +3,9 @@
   "fields": {
     "content": {
       "type": "string"
+    },
+    "date": {
+    	"type": "date"
     }
   }
 }
