@@ -6,21 +6,21 @@ define(['base/collection'],function(Collection){
       this.rendered = this.options.rendered;
       this.data = {};
       _.bindAll(this);
+      this.requests = {};
+      for(var name in this.queries) {
+        this.requests[name] = _.extend({
+          query: this.queries[name],
+          collection: new Collection()
+        }, Backbone.Events);
+      }
     },
     getDataRequests: function() {
-      return _.map(this.queries, function(query) {
-        return {
-          query: query,
-          collection: new Collection()
-        };
-      });
+      return this.requests;
     },
     render: function(err, out) {
       this.rendered = true;
       if(err) throw err;
       if(this.el) {
-        this.el.empty();
-        this.el.append(out);
         this.trigger('rendered', this.el.html());
       }
     },

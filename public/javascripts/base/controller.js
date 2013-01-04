@@ -1,6 +1,7 @@
 define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbone,$,DataFactory){
   return Backbone.View.extend({
     initialize: function() {
+      console.log("MAKE ME A CONTROLLER");
       this.params = this.options.params;
       this.renderMarkup = this.options.renderMarkup;
       if(this.renderMarkup !== false) this.renderMarkup = true;
@@ -18,14 +19,13 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
       });
       var requests = this.view.getDataRequests();
       this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-
       console.log(requests);
-
-      for(var i = 0; i < requests.length; i++) {
+      for(var i in requests) {
         (function(request) {
           var promise = DataFactory.request(request.query);
           promise.then(function(data) {
-            console.log(data);
+            request.collection.reset(data);
+            request.trigger('resolved');
           });
         })(requests[i]);
       }

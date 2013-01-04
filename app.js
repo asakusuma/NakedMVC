@@ -111,14 +111,14 @@ function(components, routes, schema, application, dataproxy) {
 
   //Setup data serving and subscribing
   application.io.sockets.on('connection', function (socket) {
-    socket.on('dp_request', function (data, callback) {
+    socket.on('dp_request', function (request, callback) {
       var args = [];
-      for(var index in data.arguments) {
-        args.push(data.arguments[index]);
+      for(var index in request.arguments) {
+        args.push(request.arguments[index]);
       }
       args.push(socket.id);
 
-      dataproxy._registerQuery(data, _.bind(function(models) {
+      dataproxy._registerQuery(request, _.bind(function(models) {
         var IAmOrigin = true;
         if(!models.getOriginID || models.getOriginID() !== socket.id) {
           IAmOrigin = false;
@@ -126,7 +126,7 @@ function(components, routes, schema, application, dataproxy) {
         socket.emit('models_changed', models, IAmOrigin);
       },this));
 
-      dataproxy[data.name].apply(dataproxy, args).then(function(results) {
+      dataproxy[request.name].apply(dataproxy, args).then(function(results) {
         callback(results);
       });
     });
