@@ -5,17 +5,20 @@ define(['base/collection', 'is-client'],function(Collection, isClient){
       var action,
         key,
         sout,
-        args;
+        args = [];
       this.controller = this.options.controller || null;
       //Modify events object
       if(isClient === false) this.events = {};
       for(key in this.events) {
-        //sout = this.events[key].split(/( (?=[^ ]*$))/);
         action = this.events[key];
-        args = action.substring(action.indexOf(' ')+1);
-        action = action.substring(0,action.indexOf(' '));
-        args = args.split(/\(\) */);
-        if(args[args.length-1] == '') args.pop();
+        if(action.indexOf(' ') > 0) {
+          args = action.substring(action.indexOf(' ')+1);
+          action = action.substring(0,action.indexOf(' '));
+          if(args.indexOf('()') > 0) {
+            args = args.split(/\(\) */);
+            if(args[args.length-1] == '') args.pop();
+          }
+        }
 
         if(action[0] === '>' || action[0] === '-') {
           sout = key.split(' ',2);
@@ -40,6 +43,7 @@ define(['base/collection', 'is-client'],function(Collection, isClient){
           delete this.events[key];
         }
       }
+
       if(this.options.el) this.el = this.options.el;
       this.rendered = this.options.rendered;
       this.data = {};
