@@ -1,4 +1,5 @@
-define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbone,$,DataFactory){
+define(['lib/underscore','lib/backbone','jquery','dataproxy','is-client'],
+  function(_,Backbone,$,DataFactory, isClient){
   return Backbone.View.extend({
     initialize: function() {
       this.params = this.options.params;
@@ -46,7 +47,7 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
     },
     onRenderMarkupFinished: function(html) {
       //if on the client
-      if(typeof window !== 'undefined') {
+      if(isClient) {
         this.view.postRender();
       }   
       this.renderCallback(html);
