@@ -4,27 +4,38 @@ define(['base/collection', 'is-client'],function(Collection, isClient){
     initialize: function() {
       var action,
         key,
-        sout;
+        sout,
+        args;
       this.controller = this.options.controller || null;
       //Modify events object
       if(isClient === false) this.events = {};
       for(key in this.events) {
+        //sout = this.events[key].split(/( (?=[^ ]*$))/);
         action = this.events[key];
+        args = action.substring(action.indexOf(' ')+1);
+        action = action.substring(0,action.indexOf(' '));
+        args = args.split(/\(\) */);
+        if(args[args.length-1] == '') args.pop();
+
         if(action[0] === '>' || action[0] === '-') {
           sout = key.split(' ',2);
 
           if(action[0] === '>' && _.isObject(this.controller)) {
             $(this.el).on(sout[0], sout[1], this.controller[action.substring(1,action.length)]);
           } else if(action[0] === '-') {
-            $(this.el).on(sout[0], sout[1], (function(eventName, object) {
-              return function() {
-                var args = [eventName];
-                for(var i = 0; i < arguments.length; i++) {
+            $(this.el).on(sout[0], sout[1], (function(eventName, object, argSpecs) {
+              return function(event) {
+                var args = [eventName],
+                  i;
+                for(i = 0; i < arguments.length; i++) {
                   args.push(arguments[i]);
+                }
+                for(i = 0; i < argSpecs.length; i++) {
+                  args.push($(event.currentTarget).find(argSpecs[i].substring(0, argSpecs[i].lastIndexOf(' ')))[argSpecs[i].substring(argSpecs[i].lastIndexOf(' ')+1)]());
                 }
                 object.trigger.apply(object, args);
               }
-            })(action.substring(1,action.length), this));
+            })(action.substring(1,action.length), this, args));
           }
           delete this.events[key];
         }
