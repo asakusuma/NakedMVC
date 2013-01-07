@@ -7,7 +7,7 @@ define(['lib/underscore', 'dustjs-linkedin', 'base/view','jquery','dustjs-linked
 		- = fire event on view
 		*/
 		events: {
-			'submit #message-form':'-messageSent input val()'
+			'submit #message-form':'-messageSent'
 		},
 		queries: {
 			'messages': {
@@ -25,7 +25,6 @@ define(['lib/underscore', 'dustjs-linkedin', 'base/view','jquery','dustjs-linked
 			//Chat controls
 			renderFuncs.push(function(callback) {
 				dust.render('chat-controls', {}, function(err, html) {
-					console.log(html);
 					callback(null,html);
 				});
 			});
