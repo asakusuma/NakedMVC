@@ -20,8 +20,20 @@ define('dataproxy', [
   ) {
 
     return _.extend({
-      request: function(request) {
+      create: function(data) {
+        data.dateCreated = new Date();
+        data.dateUpdated = data.dateCreated;
+        return Database.create(data);
+      },
+      read: function(request) {
         return Database.read(request);
+      },
+      update: function(data) {
+        data.dateUpdated = new Date();
+        return Database.update(data);
+      },
+      delete: function(request) {
+        return Database.delete(request);
       },
       _registerQuery: function(request, callback) {
         var query = request.arguments[0];

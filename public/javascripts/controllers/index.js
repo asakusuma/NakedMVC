@@ -5,9 +5,13 @@ define(['base/controller', 'views/index', 'dataproxy'],function (BaseController,
 			BaseController.prototype.initialize.call(this,arguments);
 			this.view.on('messageSent', this.onMessageSent);
 		},
-		onMessageSent: function(event) {
+		onMessageSent: function(event, message) {
 			event.preventDefault();
-			
+			alert(message);
+			var result = DataFactory.create({
+				type: 'Message',
+				content: message
+			});
 		},
 		postInit: function() {
 			console.log('Post Init!');

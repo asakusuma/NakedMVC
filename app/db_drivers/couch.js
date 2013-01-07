@@ -34,8 +34,17 @@ define([
 
     return _.extend({
       db: new Cradle.Connection().database(dbName),
-      create: function(request) {
-
+      create: function(data) {
+        var promise = new Promise();
+        this.db.save(data, function (err, res) {
+          console.log(arguments);
+          if(err) {
+            promise.reject(data);
+          } else {
+            promise.resolve(data);
+          }
+        });
+        return promise;
       },
       read: function(request) {
         var promise = new Promise();

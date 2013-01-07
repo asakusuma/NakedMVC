@@ -7,7 +7,7 @@ define(['lib/underscore', 'dustjs-linkedin', 'base/view','jquery','dustjs-linked
 		- = fire event on view
 		*/
 		events: {
-			'submit #message-form':'-messageSent'
+			'submit #message-form':'-messageSent input val()'
 		},
 		queries: {
 			'messages': {

@@ -22,7 +22,7 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy','is-client'],
       this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
       for(var i in requests) {
         (function(request) {
-          var promise = DataFactory.request(request.query);
+          var promise = DataFactory.read(request.query);
           promise.then(function(data) {
             request.collection.reset(data);
             request.trigger('resolved');
