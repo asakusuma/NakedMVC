@@ -1,7 +1,6 @@
 define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbone,$,DataFactory){
   return Backbone.View.extend({
     initialize: function() {
-      console.log("MAKE ME A CONTROLLER");
       this.params = this.options.params;
       this.renderMarkup = this.options.renderMarkup;
       if(this.renderMarkup !== false) this.renderMarkup = true;
@@ -15,6 +14,7 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy'],function(_,Backbon
       }
       this.view = new this.viewClass({
         el: this.el,
+        controller: this,
         rendered: !this.renderMarkup
       });
       var requests = this.view.getDataRequests();

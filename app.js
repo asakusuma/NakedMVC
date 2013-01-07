@@ -16,7 +16,8 @@ requirejs.config({
     paths: {
       "app": "../../app",
       "schema": "../../app/schema",
-      "dataproxy": "../../app/dataproxy"
+      "dataproxy": "../../app/dataproxy",
+      "is-client":"../../app/is-client",
     }
 });
 

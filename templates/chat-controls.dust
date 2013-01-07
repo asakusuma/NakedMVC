@@ -1,0 +1,1 @@
+<form id="message-form"><input type="text" /><button class="btn btn-primary">Send</button></form>
