@@ -1,8 +1,8 @@
 define(['lib/underscore'],function(_){
 
   function Promise() {
-    this.success = function() {},
-    this.failure = function() {},
+    this.success = [],
+    this.failure = [],
     this.context = {},
     this.registered = false,
     // 0 = waiting
@@ -14,9 +14,16 @@ define(['lib/underscore'],function(_){
     _.bindAll(this);
   }
 
+  Promise.prototype.onSuccess = function(callback) {
+    if(this.success.length == 0) {
+      this.success.push(function() {});
+    }
+    this.success.push(callback);
+  }
+
   Promise.prototype.then = function(successCallback, failureCallback, con) {
-    if(successCallback) this.success = successCallback;
-    if(failureCallback) this.failure = failureCallback;
+    if(successCallback) this.success[0] = successCallback;
+    if(failureCallback) this.failure[0] = failureCallback;
     this.registered = true;
     if(con) { this.context = con; }
     if(this.status === 1) { this.resolve(this.resolveArgs); }
@@ -29,13 +36,17 @@ define(['lib/underscore'],function(_){
       this.resolveArgs = arguments;
     }
     if(this.registered) {
-      this.success.apply(this.context,this.resolveArgs);
+      for(var i = 0; i < this.success.length; i++) {
+        this.success[i].apply(this.context,this.resolveArgs);
+      }
     }
   }
 
   Promise.prototype.update = function() {
     if(this.registered) {
-      this.success.apply(this.context,arguments);
+      for(var i = 0; i < this.success.length; i++) {
+        this.success[i].apply(this.context,arguments);
+      }
     }
   }
 
@@ -48,7 +59,9 @@ define(['lib/underscore'],function(_){
       if(error) {
         console.log(error);
       }
-      this.failure.apply(this.context,arguments);
+      for(var i = 0; i < this.failure.length; i++) {
+        this.failure[i].apply(this.context,arguments);
+      }
     }
   }
 

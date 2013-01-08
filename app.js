@@ -112,6 +112,9 @@ function(components, routes, schema, application, dataproxy) {
 
   //Setup data serving and subscribing
   application.io.sockets.on('connection', function (socket) {
+    socket.on('disconnect', function () {
+      dataproxy._socketDisconnected(socket.id);
+    });
     socket.on('dp_request', function (request, callback) {
       var args = [];
       for(var index in request.arguments) {
@@ -119,11 +122,13 @@ function(components, routes, schema, application, dataproxy) {
       }
       args.push(socket.id);
 
-      dataproxy._registerQuery(request, _.bind(function(models) {
+      dataproxy._registerQuery(request, socket.id, _.bind(function(models) {
         var IAmOrigin = true;
-        if(!models.getOriginID || models.getOriginID() !== socket.id) {
+        if(!model.getOriginID || model.getOriginID() !== socket.id) {
           IAmOrigin = false;
         }
+        console.log('Model Changed');
+        console.log(models);
         socket.emit('models_changed', models, IAmOrigin);
       },this));
 

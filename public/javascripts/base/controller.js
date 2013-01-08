@@ -40,11 +40,14 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy','is-client'],
       }, this);
       */
 
-      this.postInit();
+      if(isClient) {
+        this.clientInit();
+      } else {
+        this.serverInit();
+      }
     },
-    postInit: function() {
-
-    },
+    clientInit: function() {},
+    serverInit: function() {},
     onRenderMarkupFinished: function(html) {
       //if on the client
       if(isClient) {

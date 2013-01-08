@@ -37,11 +37,12 @@ define([
       create: function(data) {
         var promise = new Promise();
         this.db.save(data, function (err, res) {
-          console.log(arguments);
           if(err) {
             promise.reject(data);
           } else {
-            promise.resolve(data);
+            promise.resolve(_.extend(data,{
+              _id: res.id
+            }));
           }
         });
         return promise;

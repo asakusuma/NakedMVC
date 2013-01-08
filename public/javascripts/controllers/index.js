@@ -1,14 +1,15 @@
-define(['base/controller', 'views/index', 'dataproxy'],function (BaseController, ViewClass, DataFactory) {
+define(['base/controller', 'views/index', 'dataproxy', 'rid'],
+	function (BaseController, ViewClass, DataFactory, createID) {
 	var IndexController = BaseController.extend({
 		viewClass: ViewClass,
-		initialize: function() {
-			BaseController.prototype.initialize.call(this,arguments);
+		clientInit: function() {
 			this.view.on('messageSent', this.onMessageSent);
 		},
 		onMessageSent: function(event, message) {
+			var result,
+				guid = createID();
 			event.preventDefault();
-			alert(message);
-			var result = DataFactory.create({
+			result = DataFactory.create({
 				type: 'Message',
 				content: message
 			});
