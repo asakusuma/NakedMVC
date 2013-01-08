@@ -122,14 +122,14 @@ function(components, routes, schema, application, dataproxy) {
       }
       args.push(socket.id);
 
-      dataproxy._registerQuery(request, socket.id, _.bind(function(models) {
+      dataproxy._registerQuery(request, socket.id, _.bind(function(object) {
         var IAmOrigin = true;
-        if(!model.getOriginID || model.getOriginID() !== socket.id) {
+        if(!object.originSocketID || object.originSocketID !== socket.id) {
           IAmOrigin = false;
         }
         console.log('Model Changed');
-        console.log(models);
-        socket.emit('models_changed', models, IAmOrigin);
+        console.log(object);
+        socket.emit('model_changed', object, IAmOrigin);
       },this));
 
       dataproxy[request.name].apply(dataproxy, args).then(function(results) {

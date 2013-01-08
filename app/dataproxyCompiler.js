@@ -33,7 +33,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     output += "this.models = {};\n";
     output += "this.promises = {};\n";
     output += "this.socket = io.connect('" + host + "');\n";
-    output += "this.socket.on('models_changed', _.bind(this.serverModelsChanged,this));"
+    output += "this.socket.on('model_changed', _.bind(this.serverModelsChanged,this));"
     output += "} \n";
 
     output += "DataProxy.prototype.serverModelsChanged = function(data, IAmOrigin) {  \n";

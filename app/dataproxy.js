@@ -76,10 +76,9 @@ define('dataproxy', [
           return false;
         }
         return function(data, originSocketID) {
-          console.log('MAP REDUCE: ');
-          console.log(data);
-          console.log(originSocketID);
-          if(evaluate(data, request.arguments[0])) callback();
+          if(evaluate(data, request.arguments[0])) callback(_.extend(data, {
+            'originSocketID': originSocketID
+          }));
         };
       },
       _notifyClientsOnResult: function(promise, originSocketID) {
