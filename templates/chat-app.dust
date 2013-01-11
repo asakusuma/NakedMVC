@@ -1,0 +1,2 @@
+<div id="messages">{messages|s}</div>
+<div id="controls">{controls|s}</div>

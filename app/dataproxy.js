@@ -8,7 +8,9 @@ define('dataproxy', [
     'async',
     'schema',
     'base/model',
-    'underscore'
+    'base/collection',
+    'underscore',
+    'dataproxy-utility'
   ], function (
     Backbone, 
     Promise, 
@@ -16,7 +18,9 @@ define('dataproxy', [
     Async, 
     Schema,
     Model,
-    _
+    Collection,
+    _,
+    Utility
   ) {
 
     return _.extend({
@@ -30,7 +34,11 @@ define('dataproxy', [
         return result;
       },
       read: function(request) {
-        return Database.read(request);
+      	var promise = new Promise();
+      	Database.read(request).then(function(data) {
+      		promise.resolve(new Collection(data));
+      	});
+        return promise;
       },
       update: function(data) {
         data.dateUpdated = new Date();
@@ -46,40 +54,8 @@ define('dataproxy', [
           if(!_.isObject(this.subscriptions[socketID])) {
             this.subscriptions[socketID] = [];
           }
-          this.subscriptions[socketID].push(this._buildMapReduceFunction(request, callback));
+          this.subscriptions[socketID].push(Utility.buildMapReduceFunction(request, callback));
         }
-      },
-      _buildMapReduceFunction: function(request, callback) {
-        var evaluate = function(data, query, key) {
-          var result = false,
-            i,
-            key;
-          if(_.isArray(query)) {
-            //OR
-            for(i = 0; i < query.length; i++) {
-              if(evaluate(data, query[i])) return true;
-            }
-            return false;
-          } else if(_.isObject(query)) {
-            //AND
-            result = true;
-            for(key in query) {
-              result = result && evaluate(data, query[key], key);
-            }
-            return result;
-          } else if(key) {
-            //Individual rule
-            if(key === 'schema') {
-              if(data.type === query) return true;
-            }
-          }
-          return false;
-        }
-        return function(data, originSocketID) {
-          if(evaluate(data, request.arguments[0])) callback(_.extend(data, {
-            'originSocketID': originSocketID
-          }));
-        };
       },
       _notifyClientsOnResult: function(promise, originSocketID) {
         promise.onSuccess((function(context, originSocketID) {

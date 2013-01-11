@@ -127,8 +127,6 @@ function(components, routes, schema, application, dataproxy) {
         if(!object.originSocketID || object.originSocketID !== socket.id) {
           IAmOrigin = false;
         }
-        console.log('Model Changed');
-        console.log(object);
         socket.emit('model_changed', object, IAmOrigin);
       },this));
 

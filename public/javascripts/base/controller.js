@@ -24,7 +24,7 @@ define(['lib/underscore','lib/backbone','jquery','dataproxy','is-client'],
         (function(request) {
           var promise = DataFactory.read(request.query);
           promise.then(function(data) {
-            request.collection.reset(data);
+            request.collection = data;
             request.trigger('resolved');
           });
         })(requests[i]);

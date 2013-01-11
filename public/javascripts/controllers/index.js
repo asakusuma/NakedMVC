@@ -10,7 +10,7 @@ define(['base/controller', 'views/index', 'dataproxy', 'rid'],
 				guid = createID();
 			event.preventDefault();
 			result = DataFactory.create({
-				type: 'Message',
+				schema: 'Message',
 				content: message
 			});
 		},

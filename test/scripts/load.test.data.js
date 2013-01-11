@@ -42,18 +42,18 @@ requirejs(['schema', 'cradle'], function(schema, cradle) {
       db.save('_design/Message', {
         all: {
           map: function(doc) {
-            if(doc.type == 'Message') emit(doc._id, doc);
+            if(doc.schema == 'Message') emit(doc._id, doc);
           }
         }
       });
 
       db.save('m1', {
-        type: 'Message',
+        schema: 'Message',
         content: 'Hello world!'
       });
 
       db.save('m2', {
-        type: 'Message',
+        schema: 'Message',
         content: 'You rock.'
       });
 

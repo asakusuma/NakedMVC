@@ -13,7 +13,7 @@ requirejs.config({
     }
 });
 
-requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
+requirejs(['dataproxy', 'underscore', 'base/model'], function(dataproxy, _, Model) {
   // directory of dust templates are stored with .dust file extension
   var input_path = "./app/";
   // directory where the compiled .js files should be saved to
@@ -37,26 +37,7 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     output += "} \n";
 
     output += "DataProxy.prototype.serverModelsChanged = function(data, IAmOrigin) {  \n";
-      output += "if(data.attributes._id) { \n";
-        output += "var model = this.modelize(data);  \n";
-        output += "if(IAmOrigin === true) {";
-          output += "console.log('I am origin');"
-          //Send a different event if this particular client was the origin of the change
-          output += "model.trigger('originChange'); \n";
-        output += "} else {";
-          output += "console.log('I am NOT origin');"
-          output += "model.trigger('change'); \n";
-        output += "} \n";
-        output += "var key = model.get('type').toLowerCase() + 's';";
-        
-        output += "if(this.promises[key]) {";
-          output += "var promises = this.promises[key]; \n";
-          output += "for(var i = 0; i < promises.length; i++) { \n";
-          output += "promises[i].update(model); \n";
-          output += "} \n";
-        output += "} \n";
-
-      output += "} \n";
+      output += "console.log(data); \n";
     output += "} \n";
 
     output += "DataProxy.prototype.modelChanged = function(event, data) { \n";
@@ -64,27 +45,12 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     output += "}\n";
 
     output += "DataProxy.prototype.modelize = function(data) { \n";
-    output += "if(_.isArray(data)) { \n";
-    output += "var models = [];\n";
-      output += "for(var i = 0; i < data.length; i++) { models.push(this.modelize(data[i])); }\n";
-      output += "return models; \n";
-    output += "} else if(_.isObject(data) && data.attributes) {\n";
-      output += "for(var key in data.attributes) {\n";
-        output += "data.attributes[key] = this.modelize(data.attributes[key]);\n";
-      output += "} \n";
-      output += "var model;\n";
-      output += "if(this.models[data.attributes._id]) {\n";
-        output += "model = this.models[data.attributes._id]\n";
-        output += "model.attributes = data.attributes;\n";
-        output += " } else { \n";
-        output += "model = new Model(data.attributes);\n";
-        output += "model.on('change', _.bind(this.modelChanged, this));\n";
-        output += "model.on('broadcastChange', _.bind(this.modelChanged, this));\n";
-        output += "this.models[data.attributes._id] = model;\n";
-        output += " }";
-      output += "return model;\n";
-
-    output += "} else { return data; } \n";
+      output += "if(_.isObject(this.models[data._id])) { \n";
+        output += "return this.models[data._id];\n";
+      output += "} else {\n";
+        output += "this.models[data._id] = new Model(data); \n";
+        output += "return this.models[data._id];\n";
+      output += "}\n";
     output += "}\n";
 
     for(var property in dataproxy) {
@@ -123,12 +89,13 @@ requirejs(['dataproxy', 'underscore'], function(dataproxy, _) {
     
   }
 
-  compile_dataproxy();
+
+  //compile_dataproxy();
 
   watch.createMonitor(input_path, function (monitor) {
-    console.log("Watching " + input_path);
-    monitor.files['dataproxy.js', '*/*'];
-    monitor.on("created", compile_dataproxy);
-    monitor.on("changed", compile_dataproxy);
+    //console.log("Watching " + input_path);
+    //monitor.files['dataproxy.js', '*/*'];
+    //monitor.on("created", compile_dataproxy);
+    //monitor.on("changed", compile_dataproxy);
   });
 });

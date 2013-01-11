@@ -16,12 +16,16 @@ define(['lib/underscore', 'dustjs-linkedin', 'base/view','jquery','dustjs-linked
 		},
 		initialize: function() {
 			BaseView.prototype.initialize.call(this,arguments);
-			this.requests.messages.on('resolved', _.bind(this.onMessagesLoaded,this));
+			this.requests.messages.on('resolved', _.bind(this.onResolved,this));
+		},
+		onResolved: function() {
+			this.requests.messages.collection.on('add', _.bind(this.onMessageAdded, this));
+			if(this.options.rendered === false) {
+				this.onMessagesLoaded();
+			}
 		},
 		onMessagesLoaded: function() {
 			var renderFuncs = [];
-			this.el = $('<div></div>');
-
 			//Chat controls
 			renderFuncs.push(function(callback) {
 				dust.render('chat-controls', {}, function(err, html) {
@@ -42,15 +46,29 @@ define(['lib/underscore', 'dustjs-linkedin', 'base/view','jquery','dustjs-linked
 
 			async.parallel(renderFuncs, _.bind(this.onMessageTemplatesRendered, this));
 		},
+		onMessageAdded: function(model) {
+			dust.render('message', model.toJSON(), _.bind(this.onNewMessageTemplateRendered, this));
+		},
+		onNewMessageTemplateRendered: function(err, results) {
+			this.el.children('#messages').append(results);
+		},
 		onMessageTemplatesRendered: function(err, results) {
 			//Messages
+			var messages = '', controls;
 			for(var i = 1; i < results.length; i++) {
-				this.el.append(results[i]);
+				messages += results[i];
 			}
 
 			//Chat controls
-			this.el.append(results[0]);
+			controls = results[0];
 
+			dust.render('chat-app', {
+				controls: controls,
+				messages: messages
+			}, _.bind(this.onRootTemplateRendered, this));
+		},
+		onRootTemplateRendered: function(err, results) {
+			this.el.append(results);
 			this.render();
 		}
 	});
