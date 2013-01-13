@@ -28,6 +28,7 @@
     "cradle":"*",
     "async":"*",
     "jsdom":"*",
-    "node-guid": "*"
+    "node-guid": "*",
+    "mysql": "*"
   }
 }
