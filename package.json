@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node app",
     "test": "mocha test/specs --recursive",
-    "testData": "node test/scripts/load.test.data.js"
+    "testData": "node test/scripts/load.test.data.js",
+    "mysqlSchema": "node test/scripts/load.mysql.schema.js"
   },
   "dependencies": {
     "express": "3.0.3",
