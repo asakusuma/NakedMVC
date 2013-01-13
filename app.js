@@ -16,7 +16,8 @@ requirejs.config({
     paths: {
       "app": "../../app",
       "schema": "../../app/schema",
-      "dataproxy": "../../app/dataproxy"
+      "dataproxy": "../../app/dataproxy",
+      "is-client":"../../app/is-client",
     }
 });
 
@@ -30,12 +31,14 @@ function(components, routes, schema, application, dataproxy) {
     server = application.server;
 
   //Exit on crash
+  /*
   process.on('uncaughtException', function (err) {
     server.close();
   });
   process.on('SIGTERM', function () {
     server.close();
   });
+  */
 
   app.engine('dust', cons.dust);
   app.configure(function(){
@@ -68,25 +71,25 @@ function(components, routes, schema, application, dataproxy) {
       app.get(route, (function(page) {
         return function(req, res) {
           var params = req.params;
-          var controller = new page.controllerClass();
-          controller.init(req.params, function(html) {
-            
-            //Workaround for weird behavior of req.params
-            var params = {};
-            for(var key in req.params) {
-              params[key] = req.params[key];
+          var controller = new page.controllerClass({
+            params: req.params,
+            renderCallback: function(html) {
+              //Workaround for weird behavior of req.params
+              var params = {};
+              for(var key in req.params) {
+                params[key] = req.params[key];
+              }
+              if(!res._headerSent) {
+                res.render('global', {
+                  title: page.title,
+                  markup: html,
+                  route: req.route.path,
+                  url: req.url,
+                  params: JSON.stringify(params),
+                  routes: JSON.stringify(routeMap)
+                });
+              }   
             }
-
-            if(!res._headerSent) {
-              res.render('global', {
-                title: page.title,
-                markup: html,
-                route: req.route.path,
-                url: req.url,
-                params: JSON.stringify(params),
-                routes: JSON.stringify(routeMap)
-              });
-            }   
           });
         };
       })(page));
@@ -109,22 +112,25 @@ function(components, routes, schema, application, dataproxy) {
 
   //Setup data serving and subscribing
   application.io.sockets.on('connection', function (socket) {
-    socket.on('dp_request', function (data, callback) {
+    socket.on('disconnect', function () {
+      dataproxy._socketDisconnected(socket.id);
+    });
+    socket.on('dp_request', function (request, callback) {
       var args = [];
-      for(var index in data.arguments) {
-        args.push(data.arguments[index]);
+      for(var index in request.arguments) {
+        args.push(request.arguments[index]);
       }
       args.push(socket.id);
 
-      dataproxy._registerQuery(data, _.bind(function(event, models) {
+      dataproxy._registerQuery(request, socket.id, _.bind(function(object) {
         var IAmOrigin = true;
-        if(!models.getOriginID || models.getOriginID() !== socket.id) {
+        if(!object.originSocketID || object.originSocketID !== socket.id) {
           IAmOrigin = false;
         }
-        socket.emit('models_changed', models, IAmOrigin);
+        socket.emit('model_changed', object, IAmOrigin);
       },this));
 
-      dataproxy[data.name].apply(dataproxy, args).then(function(results) {
+      dataproxy[request.name].apply(dataproxy, args).then(function(results) {
         callback(results);
       });
     });

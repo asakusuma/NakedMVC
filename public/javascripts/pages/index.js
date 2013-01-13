@@ -1,6 +1,6 @@
 define(['controllers/index'],function (Controller) {
 	return {
-		title: 'Decision Boards Home',
+		title: 'Chat',
 		controllerClass: Controller
 	};
 });

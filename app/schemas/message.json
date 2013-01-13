@@ -1,10 +1,11 @@
 {
   "name": "Message",
-  "route": "/message",
   "fields": {
     "content": {
-      "type": "string",
-      "validator": ""
+      "type": "string"
+    },
+    "date": {
+    	"type": "date"
     }
   }
 }

@@ -1,0 +1,134 @@
+define(['base/queryStream', 'models/model', 'dataproxy-utility'], function(QueryStream, Model, Utility) { 
+	function DataProxy(io) { 
+		_.bindAll(this);
+		this.models = {};
+		this.queryStreams = {};
+		this.socket = io.connect('http://localhost:3000');
+		this.socket.on('model_changed', _.bind(this.serverModelsChanged,this));
+	} 
+	
+	DataProxy.prototype.serverModelsChanged = function(data, IAmOrigin) {  
+		console.log(data); 
+	} 
+	DataProxy.prototype.modelChanged = function(event, data) { 
+		this.update(data);
+	}
+
+	DataProxy.prototype.modelize = function(data) { 
+		var model;
+		if(_.isObject(this.models[data._id])) { 
+			//TODO
+			//Update if necessary and fire change event
+
+			model = this.models[data._id];
+		} else {
+			model = new Model(data); 
+			this.models[data._id] = model;
+		}
+
+		//Run query map reduce over function and update query streams accordinglyreturn model; 
+	}
+
+
+	//START CRUD
+	DataProxy.prototype.create = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'create', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.read = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'read', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.update = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'update', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.delete = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'delete', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	//END CRUD
+		
+
+	DataProxy.prototype.on = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'on', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.once = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'once', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.off = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'off', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.trigger = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'trigger', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.listenTo = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'listenTo', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.stopListening = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'stopListening', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.bind = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'bind', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	DataProxy.prototype.unbind = function() { 
+		var queryStream = new QueryStream();
+		var cb = _.bind(function(data) { 
+			queryStream.resolve(this.modelize(data)); 
+		}, this);
+		this.socket.emit('dp_request', { name: 'unbind', arguments: arguments }, cb);
+		return queryStream;
+	} 
+	return new DataProxy(io); 
+});

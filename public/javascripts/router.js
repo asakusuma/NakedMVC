@@ -67,8 +67,12 @@ define(['components', 'routes', 'schema', 'jquery'], function(components, routes
 			if(pushState) {
 				window.history.pushState({}, page.title, route);
 			}
-			this.rootController = new page.controllerClass();
-			this.rootController.init(this.app.params, _.bind(this.viewRendered, this), this.$('#app'), !isFirstRoute);
+			this.rootController = new page.controllerClass({
+				params: this.app.params,
+				renderCallback: _.bind(this.viewRendered, this),
+				el: this.$('#app'),
+				renderMarkup: !isFirstRoute
+			});
 		}
 	}
 

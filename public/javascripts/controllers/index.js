@@ -1,51 +1,21 @@
-define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventable, View, $, DataFactory) {
-	var IndexController = function() {};
-	IndexController.prototype = new Eventable();
-	_.extend(IndexController.prototype, {
-		init: function(params, callback, el, renderMarkup) {
-			if(renderMarkup !== false) renderMarkup = true;
-			this.renderCallback = _.once(callback);
-			if(el) {
-				this.el = el;
-			} else {
-				this.el = $('<div></div>');
-			}
-			this.view = new View();
-			var query = this.view.build(this.el, !renderMarkup);
-
-			this.view.on('rendered', _.bind(this.onRenderMarkupFinished, this));
-			this.dataPromise = DataFactory.request(query);
-
-			this.dataPromise.then(function(data) {
-				console.log(data);
-				this.view.setData(query, data);
-			}, function() {
-
-			}, this);
-
-			//Register View Events
-			this.view.on('boardCreated', _.bind(this.onBoardCreated, this));
+define(['base/controller', 'views/index', 'dataproxy', 'rid'],
+	function (BaseController, ViewClass, DataFactory, createID) {
+	var IndexController = BaseController.extend({
+		viewClass: ViewClass,
+		clientInit: function() {
+			this.view.on('messageSent', this.onMessageSent);
 		},
-		onRenderMarkupFinished: function(event, html) {
-			//if on the client
-			if(typeof window !== 'undefined') {
-				this.view.postRender();
-			}		
-			this.renderCallback(html);
+		onMessageSent: function(event, message) {
+			var result,
+				guid = createID();
+			event.preventDefault();
+			result = DataFactory.create({
+				schema: 'Message',
+				content: message
+			});
 		},
-		onBoardCreated: function(event, obj) {
-			if(obj.title) {
-				obj.cards = [];
-				obj.type = 'Board',
-				DataFactory.create(obj);
-			}
-		},
-		remove: function() {
-			this.dataPromise = null;
-			this.off();
-			this.el.empty();
-			this.el = null;
-			this.view.remove();
+		postInit: function() {
+			console.log('Post Init!');
 		}
 	});
 	return IndexController;

@@ -1,18 +1,12 @@
 define([
 	'controllers/index',
 
-	'pages/index',
-	'pages/board',
-
-	'views/board'
+	'pages/index'
 	],function (
 		controllerIndex,
 
-		pageIndex,
-		pageBoard,
-
-		viewBoard
-		) {
+		pageIndex
+	) {
     return {
     	controller: {
     		index: controllerIndex
@@ -21,11 +15,7 @@ define([
 
     	},
     	page: {
-    		index: pageIndex,
-    		board: pageBoard,
-    	},
-    	view: {
-    		board: viewBoard
+    		index: pageIndex
     	}
     };
 });

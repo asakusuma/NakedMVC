@@ -1,9 +1,0 @@
-{
-  name: 'Board',
-  fields: {
-    name: {
-      type: 'string',
-      validator: ''
-    }
-  }
-}
