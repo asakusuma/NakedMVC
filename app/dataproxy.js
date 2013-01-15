@@ -67,6 +67,8 @@ define('dataproxy', [
       _notifyClients: function(data, originSocketID) {
         for(var socketID in this.subscriptions) {
           for(var i = 0; i < this.subscriptions[socketID].length; i++) {
+          	console.log('ALERT');
+          	console.log(data);
             this.subscriptions[socketID][i](data, originSocketID);
           }
         }

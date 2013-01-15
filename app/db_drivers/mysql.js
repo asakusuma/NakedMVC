@@ -31,23 +31,18 @@ define([
       db: connection,
       create: function(data) {
         var promise = new Promise(),
-          schema;
-        if(data.schema && Schema.obj[data.schema]) {
+          schema,
+          query,
+          schemaName = data.schema;
+        if(data.schema && Schema.obj[schemaName]) {
           schema = Schema.obj[data.schema];
-
-          var keys = [], values = [];
-          for(var key in data) {
-            if(key !== 'schema') {
-            	keys.push(key);
-            	values.push(data[key]);
-            }
-          }
-          var query = 'INSERT INTO ' + data.schema + '(' + keys.join(',') + ") VALUES ('" + values.join("','") + "')";
-          console.log(query);
-          this.db.query(query, function(err, rows, fields) {
+          query = 'INSERT INTO ' + data.schema + ' SET ?';
+          delete data.schema;
+          this.db.query(query, data, function(err, result) {
             if (err) throw err;
-            //console.log('The solution is: ', rows[0].solution);
-            promise.resolve();
+            data['_id'] = result.insertId;
+            data['schema'] = schemaName;
+            promise.resolve(data);
           });
         }
 
