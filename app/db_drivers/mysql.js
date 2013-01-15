@@ -4,7 +4,7 @@
 define([
     'lib/backbone',
     'base/promise',
-    'MySQL',
+    'mysql',
     'async',
     'schema',
     'base/model',
@@ -12,7 +12,7 @@ define([
   ], function (
     Backbone, 
     Promise, 
-    mysql, 
+    MySQL, 
     Async, 
     Schema,
     Model,
@@ -25,30 +25,30 @@ define([
       password : 'root',
       database: 'rt'
     });
-
+    connection.connect();
 
     return _.extend({
-      db: connection
+      db: connection,
       create: function(data) {
         var promise = new Promise(),
           schema;
-        
-        if(data.schema && Schema[data.schema]) {
-          schema = Schema[data.schema];
-          connection.connect();
+        if(data.schema && Schema.obj[data.schema]) {
+          schema = Schema.obj[data.schema];
 
           var keys = [], values = [];
           for(var key in data) {
-            keys.push(key);
-            values.push(data[key]);
+            if(key !== 'schema') {
+            	keys.push(key);
+            	values.push(data[key]);
+            }
           }
-
-          connection.query('INSRT INTO ' + schema + '(' + keys.join(',') + ') VALUES (' + values.join(',') + ')', function(err, rows, fields) {
+          var query = 'INSERT INTO ' + data.schema + '(' + keys.join(',') + ") VALUES ('" + values.join("','") + "')";
+          console.log(query);
+          this.db.query(query, function(err, rows, fields) {
             if (err) throw err;
             //console.log('The solution is: ', rows[0].solution);
             promise.resolve();
           });
-          connection.end();
         }
 
         return promise;
@@ -56,13 +56,11 @@ define([
       read: function(request) {
         var promise = new Promise();
         if(request.schema) {
-          connection.connect();
-          connection.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+          this.db.query('SELECT * FROM ' + request.schema, function(err, rows, fields) {
             if (err) throw err;
 
             promise.resolve(rows);
           });
-          connection.end();
         }
         return promise;
       },

@@ -4,7 +4,7 @@
 define('dataproxy', [
     'lib/backbone',
     'base/promise',
-    'app/db_drivers/couch',
+    'app/db_drivers/mysql',
     'async',
     'schema',
     'base/model',

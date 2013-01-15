@@ -24,7 +24,7 @@ requirejs(['mysql', 'schema'], function(MySQL, Schemas) {
 
     	connection.query('DROP TABLE IF EXISTS '+schema, function(err, rows, fields) {
 		 	if (err) throw err;
-		 	var fields = '_id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(_id) ',
+		 	var fields = '_id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(_id), dateCreated int, dateUpdated int',
 		 		field,
 		 		map = {
 		 		'text': 'longtext',
